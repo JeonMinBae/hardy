@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { boardValues, remainingCounts } from "@/lib/sudoku/board";
 import { DIFFICULTY_LABEL, formatElapsed, MODE_LABEL } from "@/lib/sudoku/display";
 import { canHint, createGame, gameReducer, hasProgress, hintCount } from "@/lib/sudoku/game";
@@ -43,23 +43,24 @@ export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, on
   const board = boardValues(snapshot);
   const modalOpen = state.completed && !modalDismissed;
 
+  const persist = useCallback(() => onPersist({ ...snapshot, elapsed: getSeconds() }), [snapshot, onPersist, getSeconds]);
+
   useEffect(() => {
-    onPersist({ ...snapshot, elapsed: getSeconds() });
-  }, [snapshot, onPersist, getSeconds]);
+    persist();
+  }, [persist]);
 
   useEffect(() => {
     // 탭을 떠날 때 경과 시간을 URL 에 남긴다
-    const persistElapsed = () => onPersist({ ...snapshot, elapsed: getSeconds() });
     const onVisibility = () => {
-      if (document.visibilityState === "hidden") persistElapsed();
+      if (document.visibilityState === "hidden") persist();
     };
     document.addEventListener("visibilitychange", onVisibility);
-    window.addEventListener("pagehide", persistElapsed);
+    window.addEventListener("pagehide", persist);
     return () => {
       document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("pagehide", persistElapsed);
+      window.removeEventListener("pagehide", persist);
     };
-  }, [snapshot, onPersist, getSeconds]);
+  }, [persist]);
 
   useEffect(() => {
     if (state.completed && !completedOnOpen) void celebrate();
