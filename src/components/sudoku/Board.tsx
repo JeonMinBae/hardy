@@ -6,9 +6,9 @@ import type { Grid, Snapshot } from "@/lib/sudoku/types";
 const BACKGROUND_CLASS: Record<CellBackground, string> = {
   selected: "bg-sky-300 dark:bg-sky-700",
   sameNumber: "bg-sky-200 dark:bg-sky-800",
-  related: "bg-sky-50 dark:bg-slate-800",
+  related: "bg-sky-100 dark:bg-slate-800",
   completed: "bg-emerald-100 dark:bg-emerald-950",
-  diagonal: "bg-amber-50 dark:bg-amber-950/50",
+  diagonal: "bg-amber-100 dark:bg-amber-950/50",
   none: "bg-white dark:bg-slate-900",
 };
 const GIVEN_TEXT = "font-semibold text-slate-900 dark:text-slate-100";
@@ -41,8 +41,10 @@ export function Board({ snapshot, board, selected, onSelect }: Props) {
             onClick={() => onSelect(cell)}
             className={`relative flex items-center justify-center ${right} ${bottom} ${background}`}
           >
-            {snapshot.notes[cell] !== 0 && <Notes mask={snapshot.notes[cell]} />}
-            {value !== 0 && <span className={`relative text-xl sm:text-2xl ${text}`}>{value}</span>}
+            {snapshot.notes[cell] !== 0 && <Notes mask={snapshot.notes[cell]} withValue={value !== 0} />}
+            {value !== 0 && (
+              <span className={`relative text-xl sm:text-2xl ${snapshot.notes[cell] !== 0 ? "mt-2" : ""} ${text}`}>{value}</span>
+            )}
           </button>
         );
       })}
@@ -50,7 +52,16 @@ export function Board({ snapshot, board, selected, onSelect }: Props) {
   );
 }
 
-function Notes({ mask }: { mask: number }) {
+function Notes({ mask, withValue }: { mask: number; withValue: boolean }) {
+  // 값과 함께 있으면 3×3 배치의 가운데(5)가 큰 숫자에 가려지므로 위쪽 한 줄로 모은다
+  if (withValue) {
+    const digits = Array.from({ length: 9 }, (_, i) => i + 1).filter((d) => mask & (1 << (d - 1)));
+    return (
+      <span aria-hidden className="absolute inset-x-0 top-0 break-all text-center text-[7px] leading-none tracking-tighter text-slate-500 sm:text-[9px] dark:text-slate-400">
+        {digits.join("")}
+      </span>
+    );
+  }
   return (
     <span aria-hidden className="absolute inset-0 grid grid-cols-3 grid-rows-3 text-[9px] leading-none text-slate-500 sm:text-[11px] dark:text-slate-400">
       {Array.from({ length: 9 }, (_, i) => (
