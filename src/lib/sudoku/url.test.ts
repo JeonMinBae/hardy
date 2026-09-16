@@ -48,7 +48,9 @@ describe("parseGameSearch", () => {
   });
 
   it("주어진 칸 수가 난이도 범위 밖이면 잘못된 링크", () => {
+    // 샘플은 30칸: 초급 최소 38 미만, 고급 최대 28 초과
     expect(parse(buildGameSearch(sample({ difficulty: "easy" })))).toEqual({ kind: "invalid" });
+    expect(parse(buildGameSearch(sample({ difficulty: "hard" })))).toEqual({ kind: "invalid" });
   });
 
   it("모드 규칙에서 해가 없으면 잘못된 링크", () => {

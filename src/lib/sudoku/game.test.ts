@@ -70,6 +70,13 @@ describe("gameReducer", () => {
     expect(run(state, input(1), ERASE).snapshot.values[2]).toBe(4);
   });
 
+  it("힌트 칸은 다시하기로도 바뀌지 않는다", () => {
+    const state = run(newGame(), select(2), input(9), UNDO, HINT, REDO);
+    expect(state.snapshot.values[2]).toBe(4);
+    expect(state.snapshot.hints[2]).toBe(true);
+    expect(state.redo).toEqual([]);
+  });
+
   it("다 채우면 완성되고 편집 동작이 잠긴다", () => {
     let state = newGame();
     state.snapshot.givens.forEach((given, cell) => {

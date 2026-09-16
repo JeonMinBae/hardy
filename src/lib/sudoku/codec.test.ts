@@ -38,17 +38,27 @@ describe("codec", () => {
   });
 
   it("알 수 없는 버전은 null", () => {
-    const w = new BitWriter();
-    w.write(2, 8);
-    expect(decodeBoard(toBase64Url(w.toBytes()))).toBeNull();
+    // 나머지는 정상인 입력에서 버전 바이트만 바꾼다
+    const bytes = fromBase64Url(encodeBoard(sample()))!;
+    bytes[0] = 2;
+    expect(decodeBoard(toBase64Url(bytes))).toBeNull();
   });
 
   it("채운 칸의 값이 1~9 가 아니면 null", () => {
-    const w = new BitWriter();
-    w.write(1, 8);
-    w.write(1, 2); // 주어진 칸
-    w.write(0, 4);
-    expect(decodeBoard(toBase64Url(w.toBytes()))).toBeNull();
+    // 첫 칸만 주어진 칸인 온전한 길이의 입력. 값 검사가 없으면 디코딩에 성공한다
+    const withFirstGiven = (value: number) => {
+      const w = new BitWriter();
+      w.write(1, 8);
+      w.write(1, 2);
+      w.write(value, 4);
+      for (let i = 1; i < 81; i++) w.write(0, 2);
+      for (let i = 0; i < 81; i++) w.write(0, 1);
+      w.write(0, 20);
+      return toBase64Url(w.toBytes());
+    };
+    expect(decodeBoard(withFirstGiven(5))).not.toBeNull();
+    expect(decodeBoard(withFirstGiven(0))).toBeNull();
+    expect(decodeBoard(withFirstGiven(10))).toBeNull();
   });
 
   it("메모 존재 비트가 1인데 마스크가 0이면 null", () => {
