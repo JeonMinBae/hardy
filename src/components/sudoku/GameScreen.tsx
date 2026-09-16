@@ -2,12 +2,14 @@
 
 import { useEffect, useReducer, useState } from "react";
 import { boardValues, remainingCounts } from "@/lib/sudoku/board";
-import { DIFFICULTY_LABEL, MODE_LABEL } from "@/lib/sudoku/display";
+import { DIFFICULTY_LABEL, formatElapsed, MODE_LABEL } from "@/lib/sudoku/display";
 import { canHint, createGame, gameReducer, hasProgress, hintCount } from "@/lib/sudoku/game";
 import type { Difficulty, Grid, Mode, Snapshot } from "@/lib/sudoku/types";
 import { Board } from "./Board";
+import { celebrate } from "./celebrate";
 import { Dialog } from "./Dialog";
 import { NumberPad } from "./NumberPad";
+import { useGameTimer } from "./useGameTimer";
 import { useKeyboardControls } from "./useKeyboardControls";
 
 type PendingAction = "newGame" | "restart" | "changeSettings";
@@ -31,15 +33,39 @@ const BUTTON = "rounded-md bg-slate-100 px-2 py-2 text-sm disabled:opacity-40 da
 
 export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, onRestart, onChangeSettings }: Props) {
   const [state, dispatch] = useReducer(gameReducer, undefined, () => createGame(initialSnapshot, solution));
+  // 타이머 effect 가 URL 쓰기 effect 보다 먼저 선언돼야 완성 시점의 시간이 맞는다
+  const { seconds, getSeconds } = useGameTimer(initialSnapshot.elapsed, !state.completed);
+  // 완성 URL 로 들어온 경우 폭죽을 터뜨리지 않는다
+  const [completedOnOpen] = useState(state.completed);
+  const [modalDismissed, setModalDismissed] = useState(false);
   const [pending, setPending] = useState<PendingAction | null>(null);
   const { snapshot } = state;
   const board = boardValues(snapshot);
+  const modalOpen = state.completed && !modalDismissed;
 
   useEffect(() => {
-    onPersist(snapshot);
-  }, [snapshot, onPersist]);
+    onPersist({ ...snapshot, elapsed: getSeconds() });
+  }, [snapshot, onPersist, getSeconds]);
 
-  useKeyboardControls(dispatch, pending === null);
+  useEffect(() => {
+    // 탭을 떠날 때 경과 시간을 URL 에 남긴다
+    const persistElapsed = () => onPersist({ ...snapshot, elapsed: getSeconds() });
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") persistElapsed();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", persistElapsed);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", persistElapsed);
+    };
+  }, [snapshot, onPersist, getSeconds]);
+
+  useEffect(() => {
+    if (state.completed && !completedOnOpen) void celebrate();
+  }, [state.completed, completedOnOpen]);
+
+  useKeyboardControls(dispatch, pending === null && !modalOpen);
 
   const run = (action: PendingAction) => {
     if (action === "newGame") onNewGame(snapshot.mode, snapshot.difficulty);
@@ -57,6 +83,7 @@ export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, on
         <span className="font-medium">
           {MODE_LABEL[snapshot.mode]} · {DIFFICULTY_LABEL[snapshot.difficulty]}
         </span>
+        <span className="font-mono tabular-nums">{formatElapsed(seconds)}</span>
         <span>힌트 {hintCount(snapshot)}회</span>
       </header>
 
@@ -108,6 +135,23 @@ export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, on
             >
               확인
             </button>
+          </div>
+        </Dialog>
+      )}
+
+      {modalOpen && (
+        <Dialog title="완성했습니다!">
+          <dl className="mb-4 grid grid-cols-2 gap-y-1 text-sm">
+            <dt className="text-slate-500 dark:text-slate-400">완료 시간</dt>
+            <dd className="text-right font-mono tabular-nums">{formatElapsed(seconds)}</dd>
+            <dt className="text-slate-500 dark:text-slate-400">힌트 사용</dt>
+            <dd className="text-right">{hintCount(snapshot)}회</dd>
+          </dl>
+          <div className="grid grid-cols-2 gap-2">
+            <button type="button" onClick={() => run("restart")} className={BUTTON}>다시 풀기</button>
+            <button type="button" onClick={() => run("newGame")} className={BUTTON}>새 게임</button>
+            <button type="button" onClick={() => run("changeSettings")} className={BUTTON}>설정 변경</button>
+            <button type="button" onClick={() => setModalDismissed(true)} className={BUTTON}>닫기</button>
           </div>
         </Dialog>
       )}
