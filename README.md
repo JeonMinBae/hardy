@@ -1,36 +1,22 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 스도쿠
 
-## Getting Started
+Vercel에 배포하는 Next.js 스도쿠 앱. `/sudoku`에서만 동작하고 나머지 경로는 404다.
 
-First, run the development server:
+- 모드: 일반 / X(대각선), 난이도: 초급·중급·고급(처음 주어진 칸 38~40 / 30~34 / 24~28)
+- 게임 상태(퍼즐·입력·힌트·메모·경과 시간)는 URL 쿼리 `?m=&d=&s=`에만 저장된다
+
+## 명령
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev        # 개발 서버 (http://localhost:3000/sudoku)
+npm test           # Vitest 단위 테스트 (src/lib/sudoku)
+npm run typecheck  # next typegen 후 tsc
+npm run lint
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 구조
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/lib/sudoku`: 규칙·풀이기·생성기·URL 코덱·게임 리듀서 (순수 로직, 테스트 대상)
+- `src/components/sudoku`: 화면 컴포넌트와 훅
+- `src/app/sudoku/page.tsx`: 유일한 페이지
