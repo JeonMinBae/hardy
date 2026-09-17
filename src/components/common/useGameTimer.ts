@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MAX_ELAPSED } from "@/lib/sudoku/codec";
 
 const isVisible = () => typeof document === "undefined" || document.visibilityState === "visible";
 
-export function useGameTimer(initialSeconds: number, active: boolean) {
+/** maxSeconds: 저장 형식이 담을 수 있는 최대 초. 넘으면 이 값에서 멈춘다 */
+export function useGameTimer(initialSeconds: number, active: boolean, maxSeconds: number) {
   const accumulatedMs = useRef(initialSeconds * 1000);
   const startedAt = useRef<number | null>(null);
   const [visible, setVisible] = useState(isVisible);
@@ -14,8 +14,8 @@ export function useGameTimer(initialSeconds: number, active: boolean) {
 
   const getSeconds = useCallback(() => {
     const runningMs = startedAt.current === null ? 0 : performance.now() - startedAt.current;
-    return Math.min(MAX_ELAPSED, Math.floor((accumulatedMs.current + runningMs) / 1000));
-  }, []);
+    return Math.min(maxSeconds, Math.floor((accumulatedMs.current + runningMs) / 1000));
+  }, [maxSeconds]);
 
   useEffect(() => {
     const onVisibility = () => setVisible(isVisible());
