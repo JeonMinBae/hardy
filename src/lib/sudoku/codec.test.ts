@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { BitWriter, MAX_ELAPSED, decodeBoard, encodeBoard, fromBase64Url, toBase64Url, type BoardState } from "./codec";
+import { BitWriter, fromBase64Url, toBase64Url } from "@/lib/common/bits";
+import { MAX_ELAPSED, decodeBoard, encodeBoard, type BoardState } from "./codec";
 import { SAMPLE_PUZZLE, parseGrid } from "./testing";
 
 // SAMPLE_PUZZLE 0행: 5 3 _ _ 7 _ _ _ _ (정답 534678912)
