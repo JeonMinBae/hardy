@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "스도쿠",
-  description: "초급·중급·고급, 일반·X 스도쿠. 진행 상황은 URL에 저장됩니다.",
+  // template 은 하위 세그먼트(/sudoku, /wordle)에만 붙고, 같은 세그먼트인 / 는 default 를 쓴다
+  title: { default: "hardy", template: "%s · hardy" },
+  description: "브라우저에서 즐기는 퍼즐 게임 모음",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

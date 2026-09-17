@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { DIFFICULTY_LABEL, MODE_LABEL } from "@/lib/sudoku/display";
 import { DIFFICULTIES, MODES, type Difficulty, type Mode } from "@/lib/sudoku/types";
@@ -13,6 +14,9 @@ export function SelectScreen({ invalidLink, onStart }: Props) {
   const [mode, setMode] = useState<Mode>("normal");
   return (
     <main className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-10">
+      <Link href="/" className="-mb-4 text-sm text-slate-500 hover:underline dark:text-slate-400">
+        ← 홈
+      </Link>
       <h1 className="text-3xl font-bold">스도쿠</h1>
       {invalidLink && (
         <p role="alert" className="rounded-md bg-amber-100 px-3 py-2 text-sm text-amber-900 dark:bg-amber-900/40 dark:text-amber-100">
