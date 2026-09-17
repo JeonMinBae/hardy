@@ -1,15 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useReducer, useState } from "react";
+import { celebrate } from "@/components/common/celebrate";
+import { Dialog } from "@/components/common/Dialog";
+import { useGameTimer } from "@/components/common/useGameTimer";
+import { formatElapsed } from "@/lib/common/time";
 import { boardValues, remainingCounts } from "@/lib/sudoku/board";
-import { DIFFICULTY_LABEL, formatElapsed, MODE_LABEL } from "@/lib/sudoku/display";
+import { MAX_ELAPSED } from "@/lib/sudoku/codec";
+import { DIFFICULTY_LABEL, MODE_LABEL } from "@/lib/sudoku/display";
 import { canHint, createGame, gameReducer, hasProgress, hintCount } from "@/lib/sudoku/game";
 import type { Difficulty, Grid, Mode, Snapshot } from "@/lib/sudoku/types";
 import { Board } from "./Board";
-import { celebrate } from "./celebrate";
-import { Dialog } from "./Dialog";
 import { NumberPad } from "./NumberPad";
-import { useGameTimer } from "./useGameTimer";
 import { useKeyboardControls } from "./useKeyboardControls";
 
 type PendingAction = "newGame" | "restart" | "changeSettings";
@@ -34,7 +36,7 @@ const BUTTON = "rounded-md bg-slate-100 px-2 py-2 text-sm disabled:opacity-40 da
 export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, onRestart, onChangeSettings }: Props) {
   const [state, dispatch] = useReducer(gameReducer, undefined, () => createGame(initialSnapshot, solution));
   // 타이머 effect 가 URL 쓰기 effect 보다 먼저 선언돼야 완성 시점의 시간이 맞는다
-  const { seconds, getSeconds } = useGameTimer(initialSnapshot.elapsed, !state.completed);
+  const { seconds, getSeconds } = useGameTimer(initialSnapshot.elapsed, !state.completed, MAX_ELAPSED);
   // 완성 URL 로 들어온 경우 폭죽을 터뜨리지 않는다
   const [completedOnOpen] = useState(state.completed);
   const [modalDismissed, setModalDismissed] = useState(false);

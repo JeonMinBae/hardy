@@ -22,13 +22,5 @@ export function cellBackground(cell: number, { board, mode, selected, completed 
   return "none";
 }
 
-export function formatElapsed(totalSeconds: number): string {
-  const h = Math.floor(totalSeconds / 3600);
-  const m = Math.floor((totalSeconds % 3600) / 60);
-  const s = totalSeconds % 60;
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
-}
-
 export const MODE_LABEL: Record<Mode, string> = { normal: "일반", x: "X" };
 export const DIFFICULTY_LABEL: Record<Difficulty, string> = { easy: "초급", medium: "중급", hard: "고급" };

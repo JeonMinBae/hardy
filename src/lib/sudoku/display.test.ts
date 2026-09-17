@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cellBackground, formatElapsed, type BackgroundContext } from "./display";
+import { cellBackground, type BackgroundContext } from "./display";
 import { SAMPLE_PUZZLE, parseGrid } from "./testing";
 
 const board = parseGrid(SAMPLE_PUZZLE); // 0번 칸 5, 1번 칸 3, 2번 칸 빈칸
@@ -39,14 +39,4 @@ describe("cellBackground", () => {
     expect(cellBackground(70, ctx({ mode: "x" }))).toBe("diagonal");
     expect(cellBackground(70, ctx({}))).toBe("none");
   });
-});
-
-it.each([
-  [0, "00:00"],
-  [59, "00:59"],
-  [3599, "59:59"],
-  [3600, "1:00:00"],
-  [3725, "1:02:05"],
-])("formatElapsed(%i) = %s", (seconds, text) => {
-  expect(formatElapsed(seconds)).toBe(text);
 });
