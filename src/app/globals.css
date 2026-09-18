@@ -102,9 +102,6 @@
   --color-near: var(--near);
   --color-off: var(--off);
 
-  /* 게임 화면을 새 토큰으로 옮기는 동안만 남겨 두는 별칭 */
-  --color-background: var(--canvas);
-  --color-foreground: var(--ink);
 
   --font-display: var(--font-fraunces), Georgia, serif;
   --font-numeral: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;

@@ -160,13 +160,21 @@ components:
     border: "2px solid {colors.line}"
     rounded: "{radius.sm}"
     height: 48px
+  nonogram-cell: # 칸 사이 선은 {colors.line-strong}, 5칸마다와 판 바깥은 2px {colors.ink-muted}
+    backgroundColor: "{colors.surface}"
   nonogram-cell-filled:
     backgroundColor: "{colors.ink}"
   nonogram-cell-marked: # 비었다고 표시한 칸
     textColor: "{colors.ink-muted}"
-    glyph: "×"
+    glyph: "✕"
+  nonogram-cell-wrong: # 힌트가 짚어 준 틀린 칸
+    boxShadow: "inset 0 0 0 2px {colors.danger}"
+  nonogram-clue: # 확대하면 판 위에 겹쳐 고정되므로 배경을 깔아 둔다
+    backgroundColor: "{colors.canvas}"
+    typography: "{typography.numeral}"
+    textColor: "{colors.ink}"
   nonogram-clue-satisfied:
-    textColor: "{colors.ink-muted}"
+    textColor: "{colors.ink-muted}" # 고정된 영역이라 opacity 대신 글자색을 바꾼다
   dialog:
     backgroundColor: "{colors.surface}"
     border: "1px solid {colors.line}"
@@ -287,4 +295,4 @@ components:
 - 홈 화면(`/`)은 이번 범위 밖이다. 전역 토큰과 폰트는 따라 적용되지만 카드·제목 스타일은 예전 그대로다.
 - 노노그램 줄 완성 피드백, 화면 등장 연출은 의도적으로 넣지 않았다.
 - 다크 모드 수동 토글은 없다. OS 설정만 따른다.
-- `--color-background` / `--color-foreground` 는 옛 코드가 남아 있는 동안만 두는 별칭이다. 새로 쓰지 않는다.
+- 노노그램 퍼즐 목록의 타일은 카드처럼 보이지만 그림자를 쓰지 않는다. 수십 개가 한 화면에 깔려 그림자가 쌓이면 지저분해진다.

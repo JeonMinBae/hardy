@@ -16,9 +16,10 @@ import { addCompleted } from "./completedStorage";
 import { PuzzlePicture } from "./PuzzlePicture";
 import { useElementWidth } from "./useElementWidth";
 
-const BUTTON = "whitespace-nowrap rounded-md bg-slate-100 px-1 py-2 text-sm disabled:opacity-40 dark:bg-slate-800";
-const PRIMARY = "rounded-md bg-slate-900 px-2 py-2 text-sm text-white dark:bg-slate-100 dark:text-slate-900";
-const MODE_BUTTON = "px-2 py-2 text-sm bg-slate-100 disabled:opacity-40 aria-pressed:bg-sky-600 aria-pressed:text-white dark:bg-slate-800";
+const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+const BUTTON = `min-h-11 whitespace-nowrap rounded-md border border-line-strong px-1 py-2 text-sm disabled:opacity-40 ${FOCUS}`;
+const PRIMARY = `min-h-11 rounded-md bg-accent px-2 py-2 text-sm text-surface active:scale-[0.99] ${FOCUS}`;
+const MODE_BUTTON = `min-h-11 bg-sunken px-2 py-2 text-sm disabled:opacity-40 aria-pressed:border-accent aria-pressed:bg-accent aria-pressed:text-surface ${FOCUS}`;
 const MODE_LABEL: Record<Mode, string> = { fill: "■ 칠하기", cross: "✕ 표시" };
 const NOTICE_MS = 2000;
 // history API 호출 빈도 제한(Safari 는 30초에 100회)에 걸리지 않게 URL 쓰기 횟수를 제한한다.
@@ -132,21 +133,21 @@ export function GameScreen({ puzzle, initialSnapshot, onPersist, onRestart, onLi
   };
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-col gap-3 px-4 py-4">
-      <header className="flex items-center justify-between gap-2 text-sm">
-        <button type="button" onClick={openList} className="text-slate-500 hover:underline dark:text-slate-400">
+    <main data-game="nonogram" className="mx-auto flex w-full max-w-2xl flex-col gap-3 px-4 py-4">
+      <header className="flex items-center justify-between gap-2 border-b border-line pb-2 text-sm">
+        <button type="button" onClick={openList} className="text-ink-muted hover:underline">
           ← 목록
         </button>
-        <span className="truncate font-medium">
+        <span className="truncate font-display text-lg font-semibold">
           {puzzle.size}×{puzzle.size} #{puzzle.number}
           {state.completed && ` ${puzzle.title}`}
         </span>
-        <span className="font-mono tabular-nums">{formatElapsed(seconds)}</span>
-        <span>힌트 {snapshot.hints}회</span>
+        <span className="font-numeral tabular-nums">{formatElapsed(seconds)}</span>
+        <span className="text-sm text-ink-muted">힌트 {snapshot.hints}회</span>
       </header>
 
       <div className="grid grid-cols-3 gap-2">
-        <div className="col-span-2 grid grid-cols-2 overflow-hidden rounded-md">
+        <div className="col-span-2 grid grid-cols-2 divide-x divide-line-strong overflow-hidden rounded-md border border-line-strong">
           {(["fill", "cross"] as const).map((mode) => (
             <button
               key={mode}
@@ -179,7 +180,7 @@ export function GameScreen({ puzzle, initialSnapshot, onPersist, onRestart, onLi
         </button>
       </div>
 
-      <p role="status" className="h-5 text-center text-sm">
+      <p role="status" className="h-5 text-center text-sm text-ink-muted">
         {notice?.text}
       </p>
 
@@ -222,14 +223,14 @@ export function GameScreen({ puzzle, initialSnapshot, onPersist, onRestart, onLi
       {modalOpen && (
         <Dialog title="완성했습니다!">
           <div className="mb-4 flex flex-col items-center gap-2">
-            <PuzzlePicture solution={puzzle.solution} size={puzzle.size} label={puzzle.title} className="w-32 text-slate-900 dark:text-slate-100" />
-            <p className="text-lg font-semibold">{puzzle.title}</p>
+            <PuzzlePicture solution={puzzle.solution} size={puzzle.size} label={puzzle.title} className="w-32 text-ink" />
+            <p className="font-display text-lg font-semibold">{puzzle.title}</p>
           </div>
           <dl className="mb-4 grid grid-cols-2 gap-y-1 text-sm">
-            <dt className="text-slate-500 dark:text-slate-400">완료 시간</dt>
-            <dd className="text-right font-mono tabular-nums">{formatElapsed(seconds)}</dd>
-            <dt className="text-slate-500 dark:text-slate-400">힌트 사용</dt>
-            <dd className="text-right">{snapshot.hints}회</dd>
+            <dt className="text-ink-muted">완료 시간</dt>
+            <dd className="text-right font-numeral tabular-nums">{formatElapsed(seconds)}</dd>
+            <dt className="text-ink-muted">힌트 사용</dt>
+            <dd className="text-right font-numeral tabular-nums">{snapshot.hints}회</dd>
           </dl>
           <div className="grid grid-cols-3 gap-2">
             <button type="button" onClick={restart} className={BUTTON}>
