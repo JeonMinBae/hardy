@@ -29,3 +29,21 @@ export function remainingCounts(board: Grid): number[] {
   for (const v of board) if (v !== 0) counts[v]--;
   return counts.map((n) => Math.max(0, n));
 }
+
+/** 같은 단위에 같은 값이 또 있는 칸. 중복된 칸 모두를 표시한다 */
+export function conflictCells(board: Grid, mode: Mode): boolean[] {
+  const result = Array<boolean>(81).fill(false);
+  for (const unit of getUnits(mode)) {
+    const byValue = new Map<number, number[]>();
+    for (const i of unit) {
+      if (board[i] === 0) continue;
+      const cells = byValue.get(board[i]);
+      if (cells) cells.push(i);
+      else byValue.set(board[i], [i]);
+    }
+    for (const cells of byValue.values()) {
+      if (cells.length > 1) cells.forEach((i) => (result[i] = true));
+    }
+  }
+  return result;
+}

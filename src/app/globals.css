@@ -1,24 +1,158 @@
 @import "tailwindcss";
 
+/* 디자인 토큰의 의미와 사용 규칙은 저장소 루트 DESIGN.md 에 있다 */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  /* 바탕(canvas)과 카드(surface)는 같은 흰색이고 테두리·그림자로 구분한다.
+     따뜻함은 파고든 면(sunken)과 잉크·액센트에서 온다 */
+  --canvas: #ffffff;
+  --surface: #ffffff;
+  --sunken: #f6f3ec;
+
+  --ink: #211d17;
+  --ink-muted: #6a6152;
+  --line: #e2dbcd;
+  /* 격자선처럼 칸을 식별하는 선. 흰 바탕에서 3.7:1 */
+  --line-strong: #8d8475;
+  --danger: #a3322a;
+
+  /* 게임별 액센트. [data-game] 이 덮어쓴다 */
+  --accent: #a84a28;
+  --accent-soft: #f3e0d6;
+
+  /* 워들 판정색. 글자는 항상 --ink 라 배경만 바뀐다 */
+  --ok: #9dbe8c;
+  --near: #e6c877;
+  --off: #cac1b0;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.06), 0 10px 24px -18px rgb(0 0 0 / 0.35);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+[data-game="sudoku"] {
+  --accent: #a84a28;
+  --accent-soft: #f3e0d6;
+}
+
+[data-game="wordle"] {
+  --accent: #2a6f62;
+  --accent-soft: #dceae5;
+}
+
+[data-game="nonogram"] {
+  --accent: #7f5c0d;
+  --accent-soft: #f3e7cf;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: dark;
+
+    /* 바탕·카드는 색기 없는 검정 계열. 따뜻함은 잉크가 아니라 액센트가 낸다 */
+    --canvas: #0a0a0a;
+    --surface: #171717;
+    --sunken: #121212;
+
+    --ink: #ededed;
+    --ink-muted: #a1a1a1;
+    --line: #2a2a2a;
+    /* 다크에서도 격자선은 3:1 을 넘겨야 칸이 보인다 */
+    --line-strong: #666666;
+    --danger: #ef8b7c;
+
+    --accent: #e8906a;
+    --accent-soft: #2c2019;
+
+    --ok: #3f6b39;
+    --near: #7d5f18;
+    --off: #3a3a3a;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.5), 0 10px 24px -18px rgb(0 0 0 / 0.8);
+  }
+
+  [data-game="sudoku"] {
+    --accent: #e8906a;
+    --accent-soft: #2c2019;
+  }
+
+  [data-game="wordle"] {
+    --accent: #6fc0ae;
+    --accent-soft: #12241f;
+  }
+
+  [data-game="nonogram"] {
+    --accent: #d7a63f;
+    --accent-soft: #2b2211;
   }
 }
 
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+  --color-near: var(--near);
+  --color-off: var(--off);
+
+
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-numeral: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  --shadow-card: var(--shadow-card);
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-pop: pop 160ms var(--ease-out);
+  --animate-shake: shake 320ms var(--ease-out);
+  --animate-flip: flip 420ms ease-in-out both;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.82); }
+  60% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
+
+/* 뒤집기 중간(50%)에 앞뒤 면이 바뀐다. 색 전환은 animation-delay 로 칸마다 늦춘다 */
+@keyframes flip {
+  0% { transform: rotateX(0deg); }
+  50% { transform: rotateX(90deg); }
+  100% { transform: rotateX(0deg); }
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--canvas);
+  color: var(--ink);
   font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

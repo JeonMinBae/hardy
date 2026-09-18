@@ -7,14 +7,14 @@ import { clueDepth, clueSlot } from "@/lib/nonogram/layout";
 import { CROSSED, FILLED, type CellState } from "@/lib/nonogram/types";
 
 // Tailwind 가 클래스를 찾을 수 있도록 전체 문자열로 둔다. 5칸마다와 바깥은 굵은 선
-const RIGHT = { thin: "border-r border-r-slate-300 dark:border-r-slate-600", bold: "border-r-2 border-r-slate-500 dark:border-r-slate-400" };
-const BOTTOM = { thin: "border-b border-b-slate-300 dark:border-b-slate-600", bold: "border-b-2 border-b-slate-500 dark:border-b-slate-400" };
-const LEFT_EDGE = "border-l-2 border-l-slate-500 dark:border-l-slate-400";
-const TOP_EDGE = "border-t-2 border-t-slate-500 dark:border-t-slate-400";
-const CLUE = "text-slate-900 dark:text-slate-100";
+const RIGHT = { thin: "border-r border-r-line-strong", bold: "border-r-2 border-r-ink-muted" };
+const BOTTOM = { thin: "border-b border-b-line-strong", bold: "border-b-2 border-b-ink-muted" };
+const LEFT_EDGE = "border-l-2 border-l-ink-muted";
+const TOP_EDGE = "border-t-2 border-t-ink-muted";
+const CLUE = "text-ink";
 // 단서 영역은 스크롤 때 위에 겹쳐 고정되므로 흐리게 할 때 opacity 대신 글자색을 바꾼다
-const CLUE_DIM = "text-slate-400 dark:text-slate-500";
-const WRONG = "shadow-[inset_0_0_0_2px_var(--color-rose-500)]";
+const CLUE_DIM = "text-ink-muted";
+const WRONG = "shadow-[inset_0_0_0_2px_var(--color-danger)]";
 
 interface Props {
   size: number;
@@ -114,20 +114,20 @@ export function Board({ size, clues, cells, highlight, cell, zoomed, locked, dis
           fontSize: `${Math.max(9, Math.round(cell * 0.5))}px`,
         }}
       >
-        <div data-clue className="sticky top-0 left-0 z-20 bg-background" />
+        <div data-clue className="sticky top-0 left-0 z-20 bg-canvas" />
         {clues.cols.map((clue, col) => (
-          <div key={`col${col}`} data-clue className={`sticky top-0 z-10 flex flex-col items-center justify-end bg-background ${satisfied[size + col] ? CLUE_DIM : CLUE}`}>
+          <div key={`col${col}`} data-clue className={`sticky top-0 z-10 flex flex-col items-center justify-end bg-canvas ${satisfied[size + col] ? CLUE_DIM : CLUE}`}>
             {clue.map((n, i) => (
-              <span key={i} className="flex items-end leading-none tabular-nums" style={{ height: slot }}>
+              <span key={i} className="flex items-end font-numeral leading-none tabular-nums" style={{ height: slot }}>
                 {n}
               </span>
             ))}
           </div>
         ))}
         {Array.from({ length: size }, (_, row) => [
-          <div key={`row${row}`} data-clue className={`sticky left-0 z-10 flex items-center justify-end bg-background ${satisfied[row] ? CLUE_DIM : CLUE}`}>
+          <div key={`row${row}`} data-clue className={`sticky left-0 z-10 flex items-center justify-end bg-canvas ${satisfied[row] ? CLUE_DIM : CLUE}`}>
             {clues.rows[row].map((n, i) => (
-              <span key={i} className="text-center tabular-nums" style={{ width: slot }}>
+              <span key={i} className="text-center font-numeral tabular-nums" style={{ width: slot }}>
                 {n}
               </span>
             ))}
@@ -144,9 +144,9 @@ export function Board({ size, clues, cells, highlight, cell, zoomed, locked, dis
             return (
               <div
                 key={index}
-                className={`flex items-center justify-center ${edges} ${state === FILLED ? "bg-slate-800 dark:bg-slate-200" : "bg-white dark:bg-slate-900"} ${wrong.has(index) ? WRONG : ""}`}
+                className={`flex items-center justify-center ${edges} ${state === FILLED ? "bg-ink" : "bg-surface"} ${wrong.has(index) ? WRONG : ""}`}
               >
-                {state === CROSSED && <span className="leading-none text-slate-400 dark:text-slate-500">✕</span>}
+                {state === CROSSED && <span className="leading-none text-ink-muted">✕</span>}
               </div>
             );
           }),

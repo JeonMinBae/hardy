@@ -23,8 +23,9 @@ const SUBMIT_ERROR_MESSAGE: Record<SubmitError, string> = {
   invalid: "글자가 되지 않는 조합이에요",
 };
 const NOTICE_MS = 2000;
-const BUTTON = "rounded-md bg-slate-100 px-2 py-2 text-sm dark:bg-slate-800";
-const ICON_BUTTON = "flex h-9 w-9 items-center justify-center rounded-md text-lg hover:bg-slate-100 dark:hover:bg-slate-800";
+const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+const BUTTON = `min-h-11 rounded-md border border-line-strong px-2 py-2 text-sm ${FOCUS}`;
+const ICON_BUTTON = `flex h-9 w-9 items-center justify-center rounded-md text-lg hover:bg-sunken ${FOCUS}`;
 
 type Modal = "help" | "result" | "stats" | null;
 
@@ -41,6 +42,9 @@ export function WordleApp() {
   const [session, setSession] = useState<Session | null>(null);
   const [notice, setNotice] = useState<{ id: number; text: string } | null>(null);
   const [now, setNow] = useState<number | null>(null);
+  // 연출은 제출이라는 행동에서만 시작한다. 새로고침으로 들어온 줄은 그대로 있어야 한다
+  const [reveal, setReveal] = useState<{ puzzle: number; row: number } | null>(null);
+  const [shake, setShake] = useState<{ id: number; row: number } | null>(null);
 
   useEffect(() => {
     const saved = loadSaved();
@@ -98,8 +102,11 @@ export function WordleApp() {
     const { state, error } = submitGuess(session.game);
     if (error) {
       setNotice({ id: Date.now(), text: SUBMIT_ERROR_MESSAGE[error] });
+      setShake({ id: Date.now(), row: session.game.guesses.length });
       return;
     }
+    setShake(null);
+    setReveal({ puzzle: state.puzzle, row: state.guesses.length - 1 });
     const status = statusOf(state);
     if (status === "playing") {
       setSession({ ...session, game: state });
@@ -141,14 +148,16 @@ export function WordleApp() {
   const openModal = (modal: Modal) => setSession({ ...session, modal });
   const closeModal = () => setSession({ ...session, modal: null });
   const finished = statusOf(session.game) !== "playing";
+  // 자정이 지나 문제가 바뀌었으면 지난 문제의 연출을 물려받지 않는다
+  const revealRow = reveal !== null && reveal.puzzle === session.game.puzzle ? reveal.row : null;
 
   return (
-    <main className="mx-auto flex w-full max-w-lg flex-col gap-3 px-4 py-4">
-      <header className="flex items-center justify-between">
+    <main data-game="wordle" className="mx-auto flex w-full max-w-lg flex-col gap-3 px-4 py-4">
+      <header className="flex items-center justify-between border-b border-line pb-2">
         <Link href="/" aria-label="홈" className={ICON_BUTTON}>
           ←
         </Link>
-        <h1 className="text-lg font-bold">워들</h1>
+        <h1 className="font-display text-lg font-semibold">워들</h1>
         <div className="flex">
           <button type="button" aria-label="도움말" onClick={() => openModal("help")} className={ICON_BUTTON}>
             ?
@@ -159,11 +168,11 @@ export function WordleApp() {
         </div>
       </header>
 
-      <p role="status" className="h-5 text-center text-sm">
+      <p role="status" className="h-5 text-center text-sm text-danger">
         {notice?.text}
       </p>
 
-      <Board game={session.game} />
+      <Board game={session.game} revealRow={revealRow} shake={shake} />
       <Keyboard marks={keyMarks(session.game.guesses, session.game.answer)} onKey={pressKey} />
 
       {session.modal === "help" && <HelpDialog onClose={() => setSession({ ...session, helpSeen: true, modal: null })} />}

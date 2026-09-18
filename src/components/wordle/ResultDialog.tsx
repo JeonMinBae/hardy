@@ -8,8 +8,9 @@ import { statusOf, type WordleState } from "@/lib/wordle/game";
 import { computeStats, shareText, type Results } from "@/lib/wordle/stats";
 import { StatsSummary } from "./StatsSummary";
 
-const BUTTON = "rounded-md bg-slate-100 px-2 py-2 text-sm dark:bg-slate-800";
-const PRIMARY = "rounded-md bg-slate-900 px-2 py-2 text-sm text-white dark:bg-slate-100 dark:text-slate-900";
+const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+const BUTTON = `min-h-11 rounded-md border border-line-strong px-2 py-2 text-sm ${FOCUS}`;
+const PRIMARY = `min-h-11 rounded-md bg-accent px-2 py-2 text-sm text-surface active:scale-[0.99] ${FOCUS}`;
 
 interface Props {
   game: WordleState;
@@ -32,12 +33,12 @@ export function ResultDialog({ game, results, secondsLeft, onClose }: Props) {
     <Dialog title={won ? "정답!" : "아쉬워요"}>
       <div className="flex flex-col gap-4">
         <p className="text-center">
-          정답 <strong className="text-2xl">{game.answerWord}</strong>
+          정답 <strong className="font-display text-2xl">{game.answerWord}</strong>
         </p>
         <StatsSummary stats={computeStats(results, game.puzzle)} highlight={won ? game.guesses.length : null} />
         <p className="flex justify-between text-sm">
           <span>다음 문제까지</span>
-          <span className="font-mono tabular-nums">{secondsLeft === null ? "" : formatElapsed(secondsLeft)}</span>
+          <span className="font-numeral tabular-nums">{secondsLeft === null ? "" : formatElapsed(secondsLeft)}</span>
         </p>
         {message && (
           <p role="status" className="text-center text-sm">

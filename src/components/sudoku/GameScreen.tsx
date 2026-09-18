@@ -33,8 +33,9 @@ interface Props {
   onChangeSettings: () => void;
 }
 
-const BUTTON = "rounded-md bg-slate-100 px-2 py-2 text-sm disabled:opacity-40 dark:bg-slate-800";
-const PRIMARY = "rounded-md bg-slate-900 px-2 py-2 text-sm text-white dark:bg-slate-100 dark:text-slate-900";
+const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+const BUTTON = `min-h-11 rounded-md border border-line-strong px-2 py-2 text-sm disabled:opacity-40 ${FOCUS}`;
+const PRIMARY = `min-h-11 rounded-md bg-accent px-2 py-2 text-sm text-surface active:scale-[0.99] ${FOCUS}`;
 
 export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, onRestart, onChangeSettings }: Props) {
   const [state, dispatch] = useReducer(gameReducer, undefined, () => createGame(initialSnapshot, solution));
@@ -93,13 +94,13 @@ export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, on
   );
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-col gap-3 px-4 py-4">
-      <header className="flex items-center justify-between text-sm">
-        <span className="font-medium">
+    <main data-game="sudoku" className="mx-auto flex w-full max-w-md flex-col gap-3 px-4 py-4">
+      <header className="flex items-center justify-between border-b border-line pb-2">
+        <span className="font-display text-lg font-semibold">
           {MODE_LABEL[snapshot.mode]} · {DIFFICULTY_LABEL[snapshot.difficulty]}
         </span>
-        <span className="font-mono tabular-nums">{formatElapsed(seconds)}</span>
-        <span>힌트 {hintCount(snapshot)}회</span>
+        <span className="font-numeral tabular-nums">{formatElapsed(seconds)}</span>
+        <span className="text-sm text-ink-muted">힌트 {hintCount(snapshot)}회</span>
       </header>
 
       <Board snapshot={snapshot} board={board} selected={state.selected} onSelect={(cell) => dispatch({ type: "select", cell })} />
@@ -109,7 +110,7 @@ export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, on
           type="button"
           aria-pressed={state.inputMode === "note"}
           onClick={() => dispatch({ type: "toggleInputMode" })}
-          className={`${BUTTON} aria-pressed:bg-sky-600 aria-pressed:text-white`}
+          className={`${BUTTON} aria-pressed:border-accent aria-pressed:bg-accent aria-pressed:text-surface`}
         >
           메모
         </button>
@@ -159,10 +160,10 @@ export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, on
       {modalOpen && (
         <Dialog title="완성했습니다!">
           <dl className="mb-4 grid grid-cols-2 gap-y-1 text-sm">
-            <dt className="text-slate-500 dark:text-slate-400">완료 시간</dt>
-            <dd className="text-right font-mono tabular-nums">{formatElapsed(seconds)}</dd>
-            <dt className="text-slate-500 dark:text-slate-400">힌트 사용</dt>
-            <dd className="text-right">{hintCount(snapshot)}회</dd>
+            <dt className="text-ink-muted">완료 시간</dt>
+            <dd className="text-right font-numeral tabular-nums">{formatElapsed(seconds)}</dd>
+            <dt className="text-ink-muted">힌트 사용</dt>
+            <dd className="text-right font-numeral tabular-nums">{hintCount(snapshot)}회</dd>
           </dl>
           <div className="flex flex-col gap-2">
             {status}
