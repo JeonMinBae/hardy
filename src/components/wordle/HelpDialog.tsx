@@ -10,9 +10,9 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
   return (
     <Dialog title="워들 하는 법">
       <div className="flex flex-col gap-3 text-sm">
-        <p>한국 시간 자정마다 새 단어가 나옵니다. 단어를 자모 6개로 풀어 6번 안에 맞혀 보세요.</p>
+        <p>한국 시간 자정마다 새 단어가 나옵니다. 단어를 자모 7개로 풀어 8번 안에 맞혀 보세요.</p>
         <p>쌍자음, ㅐ·ㅘ 같은 모음 조합, 겹받침은 기본 자모로 풀어서 넣습니다.</p>
-        <p className="font-mono">계산 = ㄱㅕㅣㅅㅏㄴ · 날씨 = ㄴㅏㄹㅅㅅㅣ · 원고 = ㅇㅜㅓㄴㄱㅗ</p>
+        <p className="font-mono">강아지 = ㄱㅏㅇㅇㅏㅈㅣ · 개구리 = ㄱㅏㅣㄱㅜㄹㅣ · 까닭 = ㄱㄱㅏㄷㅏㄹㄱ</p>
         <ul className="flex flex-col gap-1">
           <li>
             <span className={`${CHIP} bg-emerald-600`}>초록</span>자리까지 맞음

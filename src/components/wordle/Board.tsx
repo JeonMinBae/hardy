@@ -23,7 +23,7 @@ export function Board({ game }: { game: WordleState }) {
     <div aria-label="워들 판" className="flex flex-col gap-1.5">
       {rows.map(({ jamo, marks }, row) => (
         <div key={row} className="flex items-center gap-2">
-          <div className="grid flex-1 grid-cols-6 gap-1.5">
+          <div className="grid flex-1 grid-cols-7 gap-1.5">
             {Array.from({ length: WORD_LENGTH }, (_, col) => (
               <div
                 key={col}
@@ -36,8 +36,8 @@ export function Board({ game }: { game: WordleState }) {
               </div>
             ))}
           </div>
-          {/* 6칸이 차고 조합될 때만 보인다 */}
-          <span className="w-14 truncate text-sm text-slate-600 dark:text-slate-300">
+          {/* 7칸이 차고 조합될 때만 보인다. 3음절까지 들어갈 폭이 필요하다 */}
+          <span className="w-16 truncate text-sm text-slate-600 dark:text-slate-300">
             {jamo.length === WORD_LENGTH ? displayWord(jamo) : null}
           </span>
         </div>

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { deserialize, EMPTY_DATA, guessesFor, serialize, type SavedData } from "./saved";
 
 const DATA: SavedData = {
-  today: { puzzle: 3, guesses: [[..."ㄱㅏㄴㅅㅏㄴ"], [..."ㄱㅕㅣㅅㅏㄴ"]] },
+  today: { puzzle: 3, guesses: [[..."ㅅㅏㅇㅓㅂㄱㅏ"], [..."ㄱㅏㅇㅇㅏㅈㅣ"]] },
   results: { 1: 4, 2: "lost", 3: 2 },
   helpSeen: true,
 };
@@ -14,7 +14,7 @@ describe("serialize / deserialize", () => {
   });
 
   it("줄은 자모를 이은 문자열로 저장한다", () => {
-    expect(JSON.parse(serialize(DATA)).today.guesses).toEqual(["ㄱㅏㄴㅅㅏㄴ", "ㄱㅕㅣㅅㅏㄴ"]);
+    expect(JSON.parse(serialize(DATA)).today.guesses).toEqual(["ㅅㅏㅇㅓㅂㄱㅏ", "ㄱㅏㅇㅇㅏㅈㅣ"]);
   });
 
   const raw = serialize(DATA);
@@ -22,16 +22,27 @@ describe("serialize / deserialize", () => {
     ["저장된 값 없음", null],
     ["JSON 아님", "{"],
     ["배열", "[]"],
-    ["알 수 없는 버전", raw.replace('"version":1', '"version":2')],
-    ["자모 5개인 줄", raw.replace("ㄱㅕㅣㅅㅏㄴ", "ㄱㅕㅣㅅㅏ")],
-    ["기본 자모가 아닌 글자", raw.replace("ㄱㅕㅣㅅㅏㄴ", "ㄲㅕㅣㅅㅏㄴ")],
-    ["7줄", serialize({ ...DATA, today: { puzzle: 3, guesses: Array(7).fill([..."ㄱㅏㄴㅅㅏㄴ"]) } })],
-    ["결과가 7회", raw.replace('"1":4', '"1":7')],
+    ["알 수 없는 버전", raw.replace('"version":2', '"version":3')],
+    ["결과가 9회", raw.replace('"1":4', '"1":9')],
     ["결과 문자열이 lost 가 아님", raw.replace('"lost"', '"win"')],
     ["문제 번호 0", raw.replace('"1":4', '"0":4')],
     ["helpSeen 누락", raw.replace(',"helpSeen":true', "")],
   ])("%s → 빈 데이터", (_, value) => {
     expect(deserialize(value)).toEqual(EMPTY_DATA);
+  });
+
+  // 통계까지 날리면 자모 6개 시절 기록이 사라진다. 진행 중이던 줄만 버린다
+  it.each([
+    ["자모 6개인 줄", raw.replace("ㄱㅏㅇㅇㅏㅈㅣ", "ㄱㅏㅇㅇㅏㅈ")],
+    ["기본 자모가 아닌 글자", raw.replace("ㄱㅏㅇㅇㅏㅈㅣ", "ㄲㅏㅇㅇㅏㅈㅣ")],
+    ["9줄", serialize({ ...DATA, today: { puzzle: 3, guesses: Array(9).fill([..."ㅅㅏㅇㅓㅂㄱㅏ"]) } })],
+  ])("%s → 오늘 진행만 버리고 통계는 남는다", (_, value) => {
+    expect(deserialize(value)).toEqual({ ...DATA, today: null });
+  });
+
+  it("자모 6개 시절 저장(버전 1)도 읽어 통계를 잇는다", () => {
+    const v1 = serialize({ ...DATA, today: { puzzle: 3, guesses: [[..."ㄱㅏㄴㅅㅏㄴ"]] } }).replace('"version":2', '"version":1');
+    expect(deserialize(v1)).toEqual({ ...DATA, today: null });
   });
 });
 

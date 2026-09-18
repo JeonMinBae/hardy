@@ -1,7 +1,7 @@
 import type { Mark } from "./evaluate";
 import { MAX_GUESSES } from "./game";
 
-/** 성공한 시도 수(1~6) 또는 실패 */
+/** 성공한 시도 수(1~8) 또는 실패. 자모 6개·6번 시도 시절 기록은 1~6 으로 남아 있다 */
 export type Result = number | "lost";
 /** 문제 번호 → 결과 */
 export type Results = Record<number, Result>;
@@ -45,7 +45,7 @@ export function computeStats(results: Results, today: number): Stats {
 
 const EMOJI: Record<Mark, string> = { correct: "🟩", present: "🟨", absent: "⬜" };
 
-export function shareText(puzzle: number, rows: readonly (readonly Mark[])[], won: boolean): string {
+export function shareText(rows: readonly (readonly Mark[])[], won: boolean): string {
   const score = won ? String(rows.length) : "X";
-  return [`hardy 워들 ${puzzle} ${score}/${MAX_GUESSES}`, "", ...rows.map((row) => row.map((mark) => EMOJI[mark]).join(""))].join("\n");
+  return [`hardy 워들 ${score}/${MAX_GUESSES}`, "", ...rows.map((row) => row.map((mark) => EMOJI[mark]).join(""))].join("\n");
 }

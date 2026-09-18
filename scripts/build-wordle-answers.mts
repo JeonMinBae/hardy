@@ -27,7 +27,7 @@ for (const line of text.split(/\r?\n/).slice(1)) {
   // 표제어 끝의 숫자는 동음이의 번호다(가격03)
   const word = headword.replace(/\d+$/, "");
   const jamo = decompose(word);
-  if (jamo?.length !== 6) continue;
+  if (jamo?.length !== 7) continue;
   const key = jamo.join("");
   if (!wordByJamo.has(key)) wordByJamo.set(key, word);
 }
