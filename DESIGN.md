@@ -28,7 +28,8 @@ accents: # 게임마다 한 색. [data-game] 이 --accent / --accent-soft 를 �
   wordle: { light: "#2a6f62", dark: "#6fc0ae", soft-light: "#dceae5", soft-dark: "#12241f" }
   nonogram: { light: "#7f5c0d", dark: "#d7a63f", soft-light: "#f3e7cf", soft-dark: "#2b2211" }
 
-wordle-verdict: # 글자는 어느 쪽이든 {colors.ink}. 배경만 바뀐다
+verdict: # 판정·상태 공용 색. 글자는 어느 쪽이든 {colors.ink} 이고 배경만 바뀐다
+  # ok = 맞음·완성(워들 정답, 스도쿠 완성 유닛), near = 부분 일치·부가 규칙 영역(워들 위치 틀림, X 대각선), off = 제외
   ok: { light: "#9dbe8c", dark: "#3f6b39" }
   near: { light: "#e6c877", dark: "#7d5f18" }
   off: { light: "#cac1b0", dark: "#3a3a3a" }
@@ -101,10 +102,11 @@ components:
     transform: "scale(.97)"
   board:
     backgroundColor: "{colors.surface}"
-    border: "1px solid {colors.line-strong}"
+    border: "2px solid {colors.ink-muted}" # 판 외곽과 3×3 경계는 같은 두께·같은 색
     rounded: "{radius.md}"
+    overflow: hidden # 모서리를 넘어 칸 배경이 삐져나오지 않게
   board-cell:
-    borderColor: "{colors.line}"
+    borderColor: "{colors.line-strong}" # 칸 사이 선
     typography: "{typography.numeral}"
     textColor: "{colors.ink}"
   board-cell-given: # 스도쿠에서 처음부터 주어진 숫자
@@ -112,13 +114,24 @@ components:
     fontWeight: 600
   board-cell-entered:
     textColor: "{colors.accent}"
+    animation: "{motion.pop}"
+  board-cell-hint: # 힌트로 채운 숫자. 입력과 색이 같아 밑줄로 구분한다
+    textColor: "{colors.accent}"
+    textDecoration: "dotted underline"
   board-cell-selected:
-    backgroundColor: "{colors.accent-soft}"
+    backgroundColor: "{colors.accent} 30%"
     outline: "2px solid {colors.accent}"
+  board-cell-same-number: # 선택한 칸과 같은 숫자
+    backgroundColor: "{colors.accent} 15%"
   board-cell-peer: # 같은 행·열·박스
     backgroundColor: "{colors.sunken}"
+  board-cell-completed: # 중복 없이 채워진 단위
+    backgroundColor: "{verdict.ok} 30%"
+  board-cell-diagonal: # X 스도쿠의 대각선
+    backgroundColor: "{verdict.near} 20%"
   board-cell-conflict:
     textColor: "{colors.danger}"
+    textDecoration: "wavy underline"
     animation: "{motion.shake}"
   pad-key:
     backgroundColor: "{colors.sunken}"
@@ -131,14 +144,14 @@ components:
     rounded: "{radius.sm}"
     typography: "{typography.title}"
   wordle-tile-ok:
-    backgroundColor: "{wordle-verdict.ok}"
+    backgroundColor: "{verdict.ok}"
     borderColor: "{colors.ink}"
     borderWidth: 2px # 색 외 단서
   wordle-tile-near:
-    backgroundColor: "{wordle-verdict.near}"
+    backgroundColor: "{verdict.near}"
     marker: "우상단 삼각 표식" # 색 외 단서
   wordle-tile-off:
-    backgroundColor: "{wordle-verdict.off}"
+    backgroundColor: "{verdict.off}"
     textColor: "{colors.ink-muted}"
   nonogram-cell-filled:
     backgroundColor: "{colors.ink}"
@@ -152,7 +165,7 @@ components:
     border: "1px solid {colors.line}"
     rounded: "{radius.xl}"
     shadow: "{elevation.dialog}"
-    backdrop: "rgb(33 29 23 / .35)"
+    backdrop: "{colors.ink} 35%"
   focus-ring:
     outline: "2px solid {colors.accent}"
     outlineOffset: "2px"
@@ -207,9 +220,13 @@ components:
 
 | 상태 | 색 | 색 외 단서 |
 | --- | --- | --- |
-| 선택한 칸 | `accent-soft` 배경 | `accent` 2px 아웃라인 |
+| 선택한 칸 | `accent` 30% 배경 | `accent` 2px 아웃라인 |
+| 같은 숫자 | `accent` 15% 배경 | — (선택 칸과 세기로 구분) |
 | 같은 행·열·박스 | `sunken` 배경 | — (선택 칸과 세기로 구분) |
-| 충돌한 숫자 | `danger` 글자 | 짧은 흔들림 |
+| 힌트로 채운 숫자 | `accent` 글자(입력과 같음) | 점선 밑줄 |
+| 충돌한 숫자 | `danger` 글자 | 물결 밑줄 + 짧은 흔들림 |
+| 완성된 단위 | `ok` 30% 배경 | — (칸이 다 채워진 것 자체가 단서) |
+| X 대각선 | `near` 20% 배경 | — (규칙 영역 표시) |
 | 워들 정답 | `ok` 배경 | `ink` 2px 테두리 |
 | 워들 위치 틀림 | `near` 배경 | 우상단 삼각 표식 |
 | 워들 없음 | `off` 배경 | 글자를 `ink-muted` 로 |

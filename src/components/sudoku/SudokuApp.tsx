@@ -88,7 +88,7 @@ export function SudokuApp() {
   const start = useCallback((mode: Mode, difficulty: Difficulty) => startNewGame(mode, difficulty, "replace"), [startNewGame]);
 
   if (generating) {
-    return <p className="mx-auto py-20 text-center text-lg">퍼즐을 만드는 중…</p>;
+    return <p className="mx-auto py-20 text-center font-display text-lg text-ink-muted">퍼즐을 만드는 중…</p>;
   }
   if (screen.name === "loading") return null;
   if (screen.name === "select") return <SelectScreen invalidLink={screen.invalidLink} onStart={start} />;

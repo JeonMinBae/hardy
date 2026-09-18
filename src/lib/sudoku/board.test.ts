@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { completedUnitCells, isComplete, remainingCounts } from "./board";
+import { completedUnitCells, conflictCells, isComplete, remainingCounts } from "./board";
 import { SAMPLE_SOLUTION, parseGrid } from "./testing";
 
 const solved = parseGrid(SAMPLE_SOLUTION);
@@ -62,4 +62,28 @@ it("remainingCounts 는 0 미만으로 내려가지 않는다", () => {
   expect(counts[5]).toBe(0);
   expect(counts[3]).toBe(8);
   expect(counts[1]).toBe(9);
+});
+
+describe("conflictCells", () => {
+  it("같은 행의 중복은 양쪽 모두 표시", () => {
+    const board = emptyGrid();
+    board[0] = 5;
+    board[3] = 5;
+    const conflicts = conflictCells(board, "normal");
+    expect(conflicts[0]).toBe(true);
+    expect(conflicts[3]).toBe(true);
+    expect(conflicts.filter(Boolean)).toHaveLength(2);
+  });
+
+  it("중복이 없으면 아무 칸도 표시하지 않는다", () => {
+    expect(conflictCells(solved, "normal").some(Boolean)).toBe(false);
+  });
+
+  it("대각선 중복은 X 모드에서만 표시", () => {
+    const board = emptyGrid();
+    board[0] = 7; // 좌상 대각선
+    board[40] = 7; // 같은 대각선, 다른 행·열·박스
+    expect(conflictCells(board, "normal").some(Boolean)).toBe(false);
+    expect(conflictCells(board, "x")[0]).toBe(true);
+  });
 });
