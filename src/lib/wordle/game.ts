@@ -1,7 +1,7 @@
 import { compose, decompose } from "./jamo";
 
-export const WORD_LENGTH = 6;
-export const MAX_GUESSES = 6;
+export const WORD_LENGTH = 7;
+export const MAX_GUESSES = 8;
 
 export type Status = "playing" | "won" | "lost";
 export type SubmitError = "incomplete" | "invalid";

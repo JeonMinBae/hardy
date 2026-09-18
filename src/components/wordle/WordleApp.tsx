@@ -19,7 +19,7 @@ import { ResultDialog } from "./ResultDialog";
 import { StatsSummary } from "./StatsSummary";
 
 const SUBMIT_ERROR_MESSAGE: Record<SubmitError, string> = {
-  incomplete: "자모 6개를 모두 입력해 주세요",
+  incomplete: "자모 7개를 모두 입력해 주세요",
   invalid: "글자가 되지 않는 조합이에요",
 };
 const NOTICE_MS = 2000;
@@ -143,12 +143,12 @@ export function WordleApp() {
   const finished = statusOf(session.game) !== "playing";
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-col gap-3 px-4 py-4">
+    <main className="mx-auto flex w-full max-w-lg flex-col gap-3 px-4 py-4">
       <header className="flex items-center justify-between">
         <Link href="/" aria-label="홈" className={ICON_BUTTON}>
           ←
         </Link>
-        <h1 className="text-lg font-bold">워들 #{session.game.puzzle}</h1>
+        <h1 className="text-lg font-bold">워들</h1>
         <div className="flex">
           <button type="button" aria-label="도움말" onClick={() => openModal("help")} className={ICON_BUTTON}>
             ?

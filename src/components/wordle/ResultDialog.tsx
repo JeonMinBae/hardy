@@ -25,7 +25,7 @@ export function ResultDialog({ game, results, secondsLeft, onClose }: Props) {
   const won = statusOf(game) === "won";
 
   const share = async () => {
-    const text = shareText(game.puzzle, game.guesses.map((guess) => evaluateGuess(guess, game.answer)), won);
+    const text = shareText(game.guesses.map((guess) => evaluateGuess(guess, game.answer)), won);
     try {
       // 비보안 컨텍스트에는 clipboard 가 없어 TypeError, 권한 거부는 reject 로 온다
       await navigator.clipboard.writeText(text);

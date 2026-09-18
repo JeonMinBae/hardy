@@ -4,11 +4,11 @@ import { computeStats, recordResult, shareText, type Results } from "./stats";
 
 describe("computeStats", () => {
   it("기록이 없으면 모두 0", () => {
-    expect(computeStats({}, 10)).toEqual({ played: 0, winRate: 0, currentStreak: 0, maxStreak: 0, distribution: [0, 0, 0, 0, 0, 0] });
+    expect(computeStats({}, 10)).toEqual({ played: 0, winRate: 0, currentStreak: 0, maxStreak: 0, distribution: [0, 0, 0, 0, 0, 0, 0, 0] });
   });
 
   it("플레이 수는 성공+실패, 승률은 반올림, 분포는 성공한 시도 수별", () => {
-    expect(computeStats({ 1: 1, 2: "lost", 3: 2 }, 3)).toMatchObject({ played: 3, winRate: 67, distribution: [1, 1, 0, 0, 0, 0] });
+    expect(computeStats({ 1: 1, 2: "lost", 3: 2 }, 3)).toMatchObject({ played: 3, winRate: 67, distribution: [1, 1, 0, 0, 0, 0, 0, 0] });
   });
 
   const STREAK_CASES: [string, Results, number][] = [
@@ -35,14 +35,14 @@ it("recordResult 는 원래 기록을 바꾸지 않고 새 기록을 돌려준�
 });
 
 describe("shareText", () => {
-  const miss: Mark[] = ["correct", "absent", "present", "absent", "absent", "absent"];
-  const hit: Mark[] = Array(6).fill("correct");
+  const miss: Mark[] = ["correct", "absent", "present", "absent", "absent", "absent", "absent"];
+  const hit: Mark[] = Array(7).fill("correct");
 
-  it("성공이면 시도 수, 정답 글자 없이 색 칸만", () => {
-    expect(shareText(12, [miss, hit], true)).toBe("hardy 워들 12 2/6\n\n🟩⬜🟨⬜⬜⬜\n🟩🟩🟩🟩🟩🟩");
+  it("성공이면 시도 수, 문제 번호와 정답 글자 없이 색 칸만", () => {
+    expect(shareText([miss, hit], true)).toBe("hardy 워들 2/8\n\n🟩⬜🟨⬜⬜⬜⬜\n🟩🟩🟩🟩🟩🟩🟩");
   });
 
-  it("실패면 X/6", () => {
-    expect(shareText(3, Array(6).fill(miss), false).split("\n")[0]).toBe("hardy 워들 3 X/6");
+  it("실패면 X/8", () => {
+    expect(shareText(Array(8).fill(miss), false).split("\n")[0]).toBe("hardy 워들 X/8");
   });
 });
