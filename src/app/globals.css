@@ -5,15 +5,17 @@
 :root {
   color-scheme: light;
 
-  /* 표면: 크림 바탕(canvas) 위에 밝은 종이(surface), 파고든 면(sunken) */
-  --canvas: #f7f3ea;
-  --surface: #fffdf7;
-  --sunken: #efe8da;
+  /* 바탕(canvas)과 카드(surface)는 같은 흰색이고 테두리·그림자로 구분한다.
+     따뜻함은 파고든 면(sunken)과 잉크·액센트에서 온다 */
+  --canvas: #ffffff;
+  --surface: #ffffff;
+  --sunken: #f6f3ec;
 
   --ink: #211d17;
   --ink-muted: #6a6152;
-  --line: #ddd5c5;
-  --line-strong: #c3b8a2;
+  --line: #e2dbcd;
+  /* 격자선처럼 칸을 식별하는 선. 흰 바탕에서 3.7:1 */
+  --line-strong: #8d8475;
   --danger: #a3322a;
 
   /* 게임별 액센트. [data-game] 이 덮어쓴다 */
@@ -25,7 +27,7 @@
   --near: #e6c877;
   --off: #cac1b0;
 
-  --shadow-card: 0 1px 2px rgb(33 29 23 / 0.06), 0 10px 24px -18px rgb(33 29 23 / 0.35);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.06), 0 10px 24px -18px rgb(0 0 0 / 0.35);
 }
 
 [data-game="sudoku"] {
@@ -47,40 +49,41 @@
   :root {
     color-scheme: dark;
 
-    /* 중립 회색이 아니라 갈색기가 도는 먹색. 라이트의 크림과 같은 계열이다 */
-    --canvas: #16130e;
-    --surface: #1e1a14;
-    --sunken: #100e0a;
+    /* 바탕·카드는 색기 없는 검정 계열. 따뜻함은 잉크가 아니라 액센트가 낸다 */
+    --canvas: #0a0a0a;
+    --surface: #171717;
+    --sunken: #121212;
 
-    --ink: #f2ece0;
-    --ink-muted: #a89e8b;
-    --line: #332d23;
-    --line-strong: #4b4232;
+    --ink: #ededed;
+    --ink-muted: #a1a1a1;
+    --line: #2a2a2a;
+    /* 다크에서도 격자선은 3:1 을 넘겨야 칸이 보인다 */
+    --line-strong: #666666;
     --danger: #ef8b7c;
 
     --accent: #e8906a;
-    --accent-soft: #33231a;
+    --accent-soft: #2c2019;
 
     --ok: #3f6b39;
     --near: #7d5f18;
-    --off: #3b362c;
+    --off: #3a3a3a;
 
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.5), 0 10px 24px -18px rgb(0 0 0 / 0.8);
   }
 
   [data-game="sudoku"] {
     --accent: #e8906a;
-    --accent-soft: #33231a;
+    --accent-soft: #2c2019;
   }
 
   [data-game="wordle"] {
     --accent: #6fc0ae;
-    --accent-soft: #162a26;
+    --accent-soft: #12241f;
   }
 
   [data-game="nonogram"] {
     --accent: #d7a63f;
-    --accent-soft: #332813;
+    --accent-soft: #2b2211;
   }
 }
 

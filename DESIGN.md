@@ -1,37 +1,37 @@
 ---
 version: 1
 name: hardy-warm-paper
-description: 크림빛 종이 위에 인쇄한 퍼즐 지면. 세리프 제목과 또렷한 숫자, 얇은 테두리와 아주 엷은 그림자로 화면을 짠다. 게임마다 액센트 한 색만 다르다.
+description: 흰 바탕에 인쇄한 퍼즐 지면. 따뜻함은 바탕이 아니라 잉크와 입력면, 액센트에서 온다. 세리프 제목과 또렷한 숫자, 얇은 테두리와 아주 엷은 그림자로 화면을 짠다. 게임마다 액센트 한 색만 다르다.
 
 colors:
   light:
-    canvas: "#f7f3ea" # 바탕. 순백은 쓰지 않는다
-    surface: "#fffdf7" # 바탕 위에 올린 카드·보드
-    sunken: "#efe8da" # 파고든 면. 숫자패드·키보드·빈 칸
-    ink: "#211d17"
+    canvas: "#ffffff" # 바탕
+    surface: "#ffffff" # 카드·보드. 바탕과 같은 색이고 테두리·그림자로 구분한다
+    sunken: "#f6f3ec" # 파고든 면. 숫자패드·키보드처럼 눌러 쓰는 영역. 유일하게 따뜻한 면
+    ink: "#211d17" # 살짝 갈색기 도는 검정
     ink-muted: "#6a6152"
-    line: "#ddd5c5"
-    line-strong: "#c3b8a2" # 3×3 경계·5칸 경계처럼 구조를 나누는 선
+    line: "#e2dbcd" # 카드 테두리 같은 장식선. 그림자와 함께 쓴다
+    line-strong: "#8d8475" # 격자선처럼 칸을 식별하는 선. 흰 바탕에서 3.7:1
     danger: "#a3322a"
   dark:
-    canvas: "#16130e" # 중립 회색이 아닌 갈색기 도는 먹색
-    surface: "#1e1a14"
-    sunken: "#100e0a"
-    ink: "#f2ece0"
-    ink-muted: "#a89e8b"
-    line: "#332d23"
-    line-strong: "#4b4232"
+    canvas: "#0a0a0a"
+    surface: "#171717"
+    sunken: "#121212"
+    ink: "#ededed"
+    ink-muted: "#a1a1a1"
+    line: "#2a2a2a"
+    line-strong: "#666666" # 검정 바탕에서 3.5:1
     danger: "#ef8b7c"
 
 accents: # 게임마다 한 색. [data-game] 이 --accent / --accent-soft 를 덮어쓴다
-  sudoku: { light: "#a84a28", dark: "#e8906a", soft-light: "#f3e0d6", soft-dark: "#33231a" }
-  wordle: { light: "#2a6f62", dark: "#6fc0ae", soft-light: "#dceae5", soft-dark: "#162a26" }
-  nonogram: { light: "#7f5c0d", dark: "#d7a63f", soft-light: "#f3e7cf", soft-dark: "#332813" }
+  sudoku: { light: "#a84a28", dark: "#e8906a", soft-light: "#f3e0d6", soft-dark: "#2c2019" }
+  wordle: { light: "#2a6f62", dark: "#6fc0ae", soft-light: "#dceae5", soft-dark: "#12241f" }
+  nonogram: { light: "#7f5c0d", dark: "#d7a63f", soft-light: "#f3e7cf", soft-dark: "#2b2211" }
 
 wordle-verdict: # 글자는 어느 쪽이든 {colors.ink}. 배경만 바뀐다
   ok: { light: "#9dbe8c", dark: "#3f6b39" }
   near: { light: "#e6c877", dark: "#7d5f18" }
-  off: { light: "#cac1b0", dark: "#3b362c" }
+  off: { light: "#cac1b0", dark: "#3a3a3a" }
 
 typography:
   display: # 화면 제목
@@ -62,7 +62,7 @@ spacing: { xs: 4px, sm: 8px, md: 12px, lg: 16px, xl: 24px, section: 40px }
 
 elevation:
   flat: none # 보드 격자·키 하나하나
-  card: "0 1px 2px rgb(33 29 23 / .06), 0 10px 24px -18px rgb(33 29 23 / .35)" # 다크는 검정 기반으로 별도 정의
+  card: "0 1px 2px rgb(0 0 0 / .06), 0 10px 24px -18px rgb(0 0 0 / .35)" # 다크는 더 짙게 별도 정의
   dialog: "{elevation.card}"
 
 motion:
@@ -164,14 +164,16 @@ components:
 
 ## 1. 분위기
 
-크림빛 종이에 인쇄한 퍼즐 지면. 화면은 조용하고, 움직이는 건 지금 손대는 칸뿐이다. 순백 배경과 파란 계열 UI는 쓰지 않는다 — 이 앱의 인상은 따뜻한 종이색에서 나온다.
+흰 지면에 인쇄한 퍼즐. 화면은 조용하고, 움직이는 건 지금 손대는 칸뿐이다. 바탕은 흰색·검정으로 비워 두고, 따뜻함은 잉크의 갈색기와 눌러 쓰는 면(`sunken`), 액센트 한 색이 낸다. 파란 계열 UI는 쓰지 않는다.
 
 ## 2. 색
 
-- `canvas` 가 바탕, 그 위에 `surface` 카드와 보드를 올린다. 입력 영역(숫자패드·키보드)처럼 눌러 쓰는 면은 `sunken` 으로 한 단 낮춘다.
+- `canvas` 와 `surface` 는 라이트에서 같은 흰색이다. 카드·보드는 면 색이 아니라 `line` 테두리와 `elevation.card` 로 구분한다. 다크에서는 `surface` 가 `canvas` 보다 한 단 밝다.
+- 숫자패드·키보드처럼 눌러 쓰는 면만 `sunken` 으로 낮춘다. 라이트에서 유일하게 따뜻한 면이라 여기에 색을 더 얹지 않는다.
 - 본문은 `ink`, 보조 설명은 `ink-muted`. 그 외 회색은 만들지 않는다.
+- 선은 두 종류다. `line` 은 카드 테두리 같은 장식선이고, 격자처럼 칸을 식별해야 하는 선은 `line-strong` 을 쓴다(WCAG 1.4.11 의 3:1 을 넘기려면 이 값이어야 한다). 스도쿠 3×3 경계처럼 더 강한 구조선은 `ink-muted` 로 한 단 올린다.
 - 액센트는 화면당 한 색이다. 게임 루트에 `data-game="sudoku" | "wordle" | "nonogram"` 을 달면 `--accent` 와 `--accent-soft` 가 그 게임 색으로 바뀌므로, 컴포넌트는 항상 `accent` 토큰만 참조한다. 특정 게임 색을 코드에 직접 적지 않는다.
-- 대비는 WCAG AA(본문 4.5:1) 기준으로 맞춰 둔 값이다. 라이트에서 액센트 글자는 `canvas`·`surface` 위에서 5:1 이상이지만 `sunken` 위에서는 4.7:1 근처이므로, 액센트 글자를 `sunken` 위에 두지 않는다.
+- 대비는 WCAG AA 기준으로 맞춰 둔 값이다. 라이트에서 액센트 글자는 `canvas` 위 5.7:1, `sunken` 위 5.2:1 이고 다크는 모두 7:1 을 넘는다.
 
 ## 3. 타이포그래피
 
@@ -191,12 +193,12 @@ components:
 
 - 보드 격자·키 한 칸은 그림자 없음. 테두리와 면 색으로만 구분한다.
 - 카드·모달만 `elevation.card` 를 쓴다. 그 이상 진한 그림자는 만들지 않는다.
-- 다크에서는 그림자가 거의 보이지 않으므로 `line` 대비로 층을 나눈다.
+- 다크에서는 그림자가 거의 보이지 않는다. 대신 `surface` 가 `canvas` 보다 밝아서 그 면 차이가 층을 만든다.
 
 ## 6. 형태
 
 - 반지름: 칸·키는 `radius.sm`, 보드·버튼은 `radius.md`, 카드는 `radius.lg`, 모달은 `radius.xl`.
-- 격자 안쪽 선은 `line`, 3×3 블록이나 5칸 묶음 같은 구조선은 `line-strong` 으로 한 단계 진하게.
+- 격자 안쪽 선은 `line-strong`, 3×3 블록이나 5칸 묶음 같은 구조선은 `ink-muted` 로 한 단계 진하게. 카드 테두리에만 `line` 을 쓴다.
 - 터치 대상은 최소 44px. 숫자패드·키보드 키는 이 값을 밑돌지 않는다.
 
 ## 7. 상태 표시
@@ -235,7 +237,8 @@ components:
 **Don't**
 
 - Tailwind 팔레트(`slate-500`, `sky-600` 등)를 직접 쓰지 않는다. 토큰이 없으면 토큰을 먼저 추가한다.
-- 순백(`#fff`)·순검정 배경을 쓰지 않는다. 종이색이 브랜드다.
+- 바탕에 크림 틴트를 넣지 않는다. 흰 바탕은 의도한 선택이고, 따뜻함은 `sunken` 과 액센트가 낸다.
+- 격자선에 `line` 을 쓰지 않는다. 너무 옅어서 칸이 안 보인다.
 - 게임별 색을 컴포넌트에 하드코딩하지 않는다.
 - hover 로만 알 수 있는 정보를 만들지 않는다. 터치에서는 hover 가 없다.
 - 그림자를 층층이 쌓지 않는다. 뜨는 것은 카드와 모달뿐이다.
