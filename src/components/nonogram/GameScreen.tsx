@@ -19,7 +19,7 @@ import { useElementWidth } from "./useElementWidth";
 const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 const BUTTON = `min-h-11 whitespace-nowrap rounded-md border border-line-strong px-1 py-2 text-sm disabled:opacity-40 ${FOCUS}`;
 const PRIMARY = `min-h-11 rounded-md bg-accent px-2 py-2 text-sm text-surface active:scale-[0.99] ${FOCUS}`;
-const MODE_BUTTON = `min-h-11 bg-sunken px-2 py-2 text-sm disabled:opacity-40 aria-pressed:border-accent aria-pressed:bg-accent aria-pressed:text-surface ${FOCUS}`;
+const MODE_BUTTON = `min-h-11 bg-sunken px-2 py-2 text-sm disabled:opacity-40 aria-pressed:bg-accent aria-pressed:text-surface ${FOCUS}`;
 const MODE_LABEL: Record<Mode, string> = { fill: "■ 칠하기", cross: "✕ 표시" };
 const NOTICE_MS = 2000;
 // history API 호출 빈도 제한(Safari 는 30초에 100회)에 걸리지 않게 URL 쓰기 횟수를 제한한다.
