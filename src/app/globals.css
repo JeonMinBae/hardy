@@ -1,24 +1,158 @@
 @import "tailwindcss";
 
+/* 디자인 토큰의 의미와 사용 규칙은 저장소 루트 DESIGN.md 에 있다 */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  /* 표면: 크림 바탕(canvas) 위에 밝은 종이(surface), 파고든 면(sunken) */
+  --canvas: #f7f3ea;
+  --surface: #fffdf7;
+  --sunken: #efe8da;
+
+  --ink: #211d17;
+  --ink-muted: #6a6152;
+  --line: #ddd5c5;
+  --line-strong: #c3b8a2;
+  --danger: #a3322a;
+
+  /* 게임별 액센트. [data-game] 이 덮어쓴다 */
+  --accent: #a84a28;
+  --accent-soft: #f3e0d6;
+
+  /* 워들 판정색. 글자는 항상 --ink 라 배경만 바뀐다 */
+  --ok: #9dbe8c;
+  --near: #e6c877;
+  --off: #cac1b0;
+
+  --shadow-card: 0 1px 2px rgb(33 29 23 / 0.06), 0 10px 24px -18px rgb(33 29 23 / 0.35);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+[data-game="sudoku"] {
+  --accent: #a84a28;
+  --accent-soft: #f3e0d6;
+}
+
+[data-game="wordle"] {
+  --accent: #2a6f62;
+  --accent-soft: #dceae5;
+}
+
+[data-game="nonogram"] {
+  --accent: #7f5c0d;
+  --accent-soft: #f3e7cf;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: dark;
+
+    /* 중립 회색이 아니라 갈색기가 도는 먹색. 라이트의 크림과 같은 계열이다 */
+    --canvas: #16130e;
+    --surface: #1e1a14;
+    --sunken: #100e0a;
+
+    --ink: #f2ece0;
+    --ink-muted: #a89e8b;
+    --line: #332d23;
+    --line-strong: #4b4232;
+    --danger: #ef8b7c;
+
+    --accent: #e8906a;
+    --accent-soft: #33231a;
+
+    --ok: #3f6b39;
+    --near: #7d5f18;
+    --off: #3b362c;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.5), 0 10px 24px -18px rgb(0 0 0 / 0.8);
+  }
+
+  [data-game="sudoku"] {
+    --accent: #e8906a;
+    --accent-soft: #33231a;
+  }
+
+  [data-game="wordle"] {
+    --accent: #6fc0ae;
+    --accent-soft: #162a26;
+  }
+
+  [data-game="nonogram"] {
+    --accent: #d7a63f;
+    --accent-soft: #332813;
   }
 }
 
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+  --color-near: var(--near);
+  --color-off: var(--off);
+
+  /* 게임 화면을 새 토큰으로 옮기는 동안만 남겨 두는 별칭 */
+  --color-background: var(--canvas);
+  --color-foreground: var(--ink);
+
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-numeral: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  --shadow-card: var(--shadow-card);
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-pop: pop 160ms var(--ease-out);
+  --animate-shake: shake 320ms var(--ease-out);
+  --animate-flip: flip 420ms ease-in-out both;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.82); }
+  60% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
+
+/* 뒤집기 중간(50%)에 앞뒤 면이 바뀐다. 색 전환은 animation-delay 로 칸마다 늦춘다 */
+@keyframes flip {
+  0% { transform: rotateX(0deg); }
+  50% { transform: rotateX(90deg); }
+  100% { transform: rotateX(0deg); }
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--canvas);
+  color: var(--ink);
   font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
