@@ -3,12 +3,14 @@
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { celebrate } from "@/components/common/celebrate";
 import { Dialog } from "@/components/common/Dialog";
+import { useCopyToClipboard } from "@/components/common/useCopyToClipboard";
 import { useGameTimer } from "@/components/common/useGameTimer";
 import { formatElapsed } from "@/lib/common/time";
 import { boardValues, remainingCounts } from "@/lib/sudoku/board";
 import { MAX_ELAPSED } from "@/lib/sudoku/codec";
 import { DIFFICULTY_LABEL, MODE_LABEL } from "@/lib/sudoku/display";
 import { canHint, createGame, gameReducer, hasProgress, hintCount } from "@/lib/sudoku/game";
+import { shareText, shareUrl } from "@/lib/sudoku/share";
 import type { Difficulty, Grid, Mode, Snapshot } from "@/lib/sudoku/types";
 import { Board } from "./Board";
 import { NumberPad } from "./NumberPad";
@@ -32,6 +34,7 @@ interface Props {
 }
 
 const BUTTON = "rounded-md bg-slate-100 px-2 py-2 text-sm disabled:opacity-40 dark:bg-slate-800";
+const PRIMARY = "rounded-md bg-slate-900 px-2 py-2 text-sm text-white dark:bg-slate-100 dark:text-slate-900";
 
 export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, onRestart, onChangeSettings }: Props) {
   const [state, dispatch] = useReducer(gameReducer, undefined, () => createGame(initialSnapshot, solution));
@@ -41,6 +44,7 @@ export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, on
   const [completedOnOpen] = useState(state.completed);
   const [modalDismissed, setModalDismissed] = useState(false);
   const [pending, setPending] = useState<PendingAction | null>(null);
+  const { copy, message: copyMessage } = useCopyToClipboard();
   const { snapshot } = state;
   const board = boardValues(snapshot);
   const modalOpen = state.completed && !modalDismissed;
@@ -79,6 +83,14 @@ export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, on
     if (!state.completed && hasProgress(snapshot)) setPending(action);
     else run(action);
   };
+  // 아직 푸는 중이면 기록 줄 없이 문제 링크만 공유한다
+  const share = () => void copy(shareText(snapshot, shareUrl(window.location.origin, snapshot), state.completed ? seconds : null));
+  // 하단 버튼줄과 완성 다이얼로그 두 곳에 쓴다. 동시에 켜면 live region 이 두 번 읽히므로 아래에서 한쪽만 그린다
+  const status = copyMessage && (
+    <p role="status" className="text-center text-sm">
+      {copyMessage}
+    </p>
+  );
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-col gap-3 px-4 py-4">
@@ -117,11 +129,13 @@ export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, on
 
       <NumberPad remaining={remainingCounts(board)} onInput={(digit) => dispatch({ type: "input", digit })} />
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-4 gap-2">
         <button type="button" onClick={() => request("newGame")} className={BUTTON}>새 게임</button>
         <button type="button" onClick={() => request("restart")} className={BUTTON}>다시 풀기</button>
         <button type="button" onClick={() => request("changeSettings")} className={BUTTON}>설정 변경</button>
+        <button type="button" onClick={share} className={BUTTON}>공유</button>
       </div>
+      {!modalOpen && status}
 
       {pending && (
         <Dialog title="확인">
@@ -134,7 +148,7 @@ export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, on
                 setPending(null);
                 run(pending);
               }}
-              className="rounded-md bg-slate-900 px-2 py-2 text-sm text-white dark:bg-slate-100 dark:text-slate-900"
+              className={PRIMARY}
             >
               확인
             </button>
@@ -150,11 +164,15 @@ export function GameScreen({ initialSnapshot, solution, onPersist, onNewGame, on
             <dt className="text-slate-500 dark:text-slate-400">힌트 사용</dt>
             <dd className="text-right">{hintCount(snapshot)}회</dd>
           </dl>
-          <div className="grid grid-cols-2 gap-2">
-            <button type="button" onClick={() => run("restart")} className={BUTTON}>다시 풀기</button>
-            <button type="button" onClick={() => run("newGame")} className={BUTTON}>새 게임</button>
-            <button type="button" onClick={() => run("changeSettings")} className={BUTTON}>설정 변경</button>
-            <button type="button" onClick={() => setModalDismissed(true)} className={BUTTON}>닫기</button>
+          <div className="flex flex-col gap-2">
+            {status}
+            <button type="button" onClick={share} className={PRIMARY}>결과 공유</button>
+            <div className="grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => run("restart")} className={BUTTON}>다시 풀기</button>
+              <button type="button" onClick={() => run("newGame")} className={BUTTON}>새 게임</button>
+              <button type="button" onClick={() => run("changeSettings")} className={BUTTON}>설정 변경</button>
+              <button type="button" onClick={() => setModalDismissed(true)} className={BUTTON}>닫기</button>
+            </div>
           </div>
         </Dialog>
       )}

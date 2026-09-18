@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { Dialog } from "@/components/common/Dialog";
+import { useCopyToClipboard } from "@/components/common/useCopyToClipboard";
 import { formatElapsed } from "@/lib/common/time";
 import { evaluateGuess } from "@/lib/wordle/evaluate";
 import { statusOf, type WordleState } from "@/lib/wordle/game";
 import { computeStats, shareText, type Results } from "@/lib/wordle/stats";
 import { StatsSummary } from "./StatsSummary";
 
-const COPY_MESSAGE = { done: "복사했어요", failed: "복사하지 못했어요" } as const;
 const BUTTON = "rounded-md bg-slate-100 px-2 py-2 text-sm dark:bg-slate-800";
 const PRIMARY = "rounded-md bg-slate-900 px-2 py-2 text-sm text-white dark:bg-slate-100 dark:text-slate-900";
 
@@ -21,18 +20,12 @@ interface Props {
 }
 
 export function ResultDialog({ game, results, secondsLeft, onClose }: Props) {
-  const [copy, setCopy] = useState<keyof typeof COPY_MESSAGE | null>(null);
+  const { copy, message } = useCopyToClipboard();
   const won = statusOf(game) === "won";
 
-  const share = async () => {
-    const text = shareText(game.guesses.map((guess) => evaluateGuess(guess, game.answer)), won);
-    try {
-      // 비보안 컨텍스트에는 clipboard 가 없어 TypeError, 권한 거부는 reject 로 온다
-      await navigator.clipboard.writeText(text);
-      setCopy("done");
-    } catch {
-      setCopy("failed");
-    }
+  const share = () => {
+    const rows = game.guesses.map((guess) => evaluateGuess(guess, game.answer));
+    void copy(shareText(rows, won, `${window.location.origin}/wordle`));
   };
 
   return (
@@ -46,13 +39,13 @@ export function ResultDialog({ game, results, secondsLeft, onClose }: Props) {
           <span>다음 문제까지</span>
           <span className="font-mono tabular-nums">{secondsLeft === null ? "" : formatElapsed(secondsLeft)}</span>
         </p>
-        {copy && (
+        {message && (
           <p role="status" className="text-center text-sm">
-            {COPY_MESSAGE[copy]}
+            {message}
           </p>
         )}
         <div className="grid grid-cols-2 gap-2">
-          <button type="button" onClick={() => void share()} className={PRIMARY}>
+          <button type="button" onClick={share} className={PRIMARY}>
             결과 공유
           </button>
           <button type="button" onClick={onClose} className={BUTTON}>

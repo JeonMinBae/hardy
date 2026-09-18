@@ -45,7 +45,8 @@ export function computeStats(results: Results, today: number): Stats {
 
 const EMOJI: Record<Mark, string> = { correct: "🟩", present: "🟨", absent: "⬜" };
 
-export function shareText(rows: readonly (readonly Mark[])[], won: boolean): string {
+export function shareText(rows: readonly (readonly Mark[])[], won: boolean, url: string): string {
   const score = won ? String(rows.length) : "X";
-  return [`hardy 워들 ${score}/${MAX_GUESSES}`, "", ...rows.map((row) => row.map((mark) => EMOJI[mark]).join(""))].join("\n");
+  const grid = rows.map((row) => row.map((mark) => EMOJI[mark]).join(""));
+  return [`hardy 워들 ${score}/${MAX_GUESSES}`, "", ...grid, "", url].join("\n");
 }
