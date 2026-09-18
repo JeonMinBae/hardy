@@ -139,20 +139,27 @@ components:
     rounded: "{radius.sm}"
     typography: "{typography.numeral}"
     minHeight: 44px
-  wordle-tile:
-    border: "1px solid {colors.line-strong}"
+  wordle-tile: # 테두리는 2px 고정. 판정은 색과 테두리 모양으로 같이 말한다
+    border: "2px solid {colors.line}"
     rounded: "{radius.sm}"
     typography: "{typography.title}"
+  wordle-tile-typed: # 입력했지만 아직 제출하지 않은 칸
+    borderColor: "{colors.line-strong}"
   wordle-tile-ok:
     backgroundColor: "{verdict.ok}"
-    borderColor: "{colors.ink}"
-    borderWidth: 2px # 색 외 단서
+    border: "2px solid {colors.ink}" # 색 외 단서: 실선
   wordle-tile-near:
     backgroundColor: "{verdict.near}"
-    marker: "우상단 삼각 표식" # 색 외 단서
+    border: "2px dashed {colors.ink}" # 색 외 단서: 점선
   wordle-tile-off:
     backgroundColor: "{verdict.off}"
+    borderColor: "{verdict.off}" # 잉크 테두리 없음
     textColor: "{colors.ink-muted}"
+  wordle-key: # 화면 키보드. 판정색·테두리 규칙을 타일과 그대로 공유한다
+    backgroundColor: "{colors.sunken}"
+    border: "2px solid {colors.line}"
+    rounded: "{radius.sm}"
+    height: 48px
   nonogram-cell-filled:
     backgroundColor: "{colors.ink}"
   nonogram-cell-marked: # 비었다고 표시한 칸
@@ -227,9 +234,9 @@ components:
 | 충돌한 숫자 | `danger` 글자 | 물결 밑줄 + 짧은 흔들림 |
 | 완성된 단위 | `ok` 30% 배경 | — (칸이 다 채워진 것 자체가 단서) |
 | X 대각선 | `near` 20% 배경 | — (규칙 영역 표시) |
-| 워들 정답 | `ok` 배경 | `ink` 2px 테두리 |
-| 워들 위치 틀림 | `near` 배경 | 우상단 삼각 표식 |
-| 워들 없음 | `off` 배경 | 글자를 `ink-muted` 로 |
+| 워들 정답 | `ok` 배경 | `ink` 실선 테두리 |
+| 워들 위치 틀림 | `near` 배경 | `ink` 점선 테두리 |
+| 워들 없음 | `off` 배경 | 잉크 테두리 없음 + 글자를 `ink-muted` 로 |
 | 노노그램 충족 단서 | `ink-muted` 글자 | 흐려짐 |
 
 포커스 링은 `focus-ring` 토큰을 그대로 쓴다. 키보드로 조작하는 화면이라 링을 지우지 않는다.
@@ -237,7 +244,8 @@ components:
 ## 8. 모션
 
 - 상태 전환은 `motion.fast`~`base`, 이징은 `ease-out` 하나만 쓴다.
-- 워들: 제출하면 타일이 왼쪽부터 `motion.flip` 으로 한 칸씩 뒤집히며 판정색이 드러난다. 칸 간격은 약 100ms. 목록에 없는 단어면 그 줄이 `motion.shake` 로 흔들린다.
+- 워들: 제출하면 타일이 왼쪽부터 `motion.flip` 으로 한 칸씩 뒤집힌다. 칸 간격은 100ms. 글자가 되지 않는 조합이면 그 줄이 `motion.shake` 로 흔들린다.
+- 연출은 마운트가 아니라 **제출이라는 행동**에서 시작한다. 새로고침이나 저장된 진행으로 들어온 줄은 가만히 있어야 하므로, 어느 줄을 뒤집을지는 상태(`reveal`, `shake`)로 들고 있는다.
 - 스도쿠: 숫자를 놓으면 `motion.pop`, 같은 행·열·박스에 중복이 생기면 해당 칸이 `motion.shake`.
 - 그 외 등장 애니메이션은 넣지 않는다. 완료 시 폭죽은 기존 동작을 유지한다.
 - `prefers-reduced-motion: reduce` 는 `globals.css` 에서 전역으로 꺼진다. 개별 컴포넌트에서 다시 켜지 않는다.
