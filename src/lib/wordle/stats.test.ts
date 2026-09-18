@@ -38,11 +38,11 @@ describe("shareText", () => {
   const miss: Mark[] = ["correct", "absent", "present", "absent", "absent", "absent", "absent"];
   const hit: Mark[] = Array(7).fill("correct");
 
-  it("성공이면 시도 수, 문제 번호와 정답 글자 없이 색 칸만", () => {
-    expect(shareText([miss, hit], true)).toBe("hardy 워들 2/8\n\n🟩⬜🟨⬜⬜⬜⬜\n🟩🟩🟩🟩🟩🟩🟩");
+  it("성공이면 시도 수, 문제 번호와 정답 글자 없이 색 칸만. 빈 줄 뒤 마지막 줄은 접속 주소", () => {
+    expect(shareText([miss, hit], true, "URL")).toBe("hardy 워들 2/8\n\n🟩⬜🟨⬜⬜⬜⬜\n🟩🟩🟩🟩🟩🟩🟩\n\nURL");
   });
 
   it("실패면 X/8", () => {
-    expect(shareText(Array(8).fill(miss), false).split("\n")[0]).toBe("hardy 워들 X/8");
+    expect(shareText(Array(8).fill(miss), false, "URL").split("\n")[0]).toBe("hardy 워들 X/8");
   });
 });

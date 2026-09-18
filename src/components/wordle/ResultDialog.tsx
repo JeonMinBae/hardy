@@ -25,7 +25,7 @@ export function ResultDialog({ game, results, secondsLeft, onClose }: Props) {
 
   const share = () => {
     const rows = game.guesses.map((guess) => evaluateGuess(guess, game.answer));
-    void copy(shareText(rows, won));
+    void copy(shareText(rows, won, `${window.location.origin}/wordle`));
   };
 
   return (
