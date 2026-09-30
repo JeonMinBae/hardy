@@ -1,20 +1,21 @@
 // scripts/build-wordle-answers.mts 가 Node 로 직접 읽는다. import 를 두려면 .ts 확장자까지 적어야 한다
 export const CONSONANTS = ["ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"] as const;
-export const VOWELS = ["ㅏ", "ㅑ", "ㅓ", "ㅕ", "ㅗ", "ㅛ", "ㅜ", "ㅠ", "ㅡ", "ㅣ"] as const;
+// ㅐㅒㅔㅖ는 두벌식 자판에 키가 있어 한 칸으로 친다. ㅏ 와 ㅣ 를 따로 넣으면 ㅐ가 되지 않는다
+export const VOWELS = ["ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅛ", "ㅜ", "ㅠ", "ㅡ", "ㅣ"] as const;
 
 const JAMO = new Set<string>([...CONSONANTS, ...VOWELS]);
 const VOWEL_SET = new Set<string>(VOWELS);
 
 // 배열 순서가 곧 유니코드 인덱스다: 음절 = 0xAC00 + (초성 × 21 + 중성) × 28 + 종성
 const CHOSEONG = ["ㄱ", "ㄱㄱ", "ㄴ", "ㄷ", "ㄷㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅂㅂ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅈㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
-const JUNGSEONG = ["ㅏ", "ㅏㅣ", "ㅑ", "ㅑㅣ", "ㅓ", "ㅓㅣ", "ㅕ", "ㅕㅣ", "ㅗ", "ㅗㅏ", "ㅗㅏㅣ", "ㅗㅣ", "ㅛ", "ㅜ", "ㅜㅓ", "ㅜㅓㅣ", "ㅜㅣ", "ㅠ", "ㅡ", "ㅡㅣ", "ㅣ"];
+const JUNGSEONG = ["ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅗㅏ", "ㅗㅐ", "ㅗㅣ", "ㅛ", "ㅜ", "ㅜㅓ", "ㅜㅔ", "ㅜㅣ", "ㅠ", "ㅡ", "ㅡㅣ", "ㅣ"];
 const JONGSEONG = ["", "ㄱ", "ㄱㄱ", "ㄱㅅ", "ㄴ", "ㄴㅈ", "ㄴㅎ", "ㄷ", "ㄹ", "ㄹㄱ", "ㄹㅁ", "ㄹㅂ", "ㄹㅅ", "ㄹㅌ", "ㄹㅍ", "ㄹㅎ", "ㅁ", "ㅂ", "ㅂㅅ", "ㅅ", "ㅅㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
 const SYLLABLE_BASE = 0xac00;
 const SYLLABLE_COUNT = 11172;
 
 export const isJamo = (value: string) => JAMO.has(value);
 
-/** 한글 음절로만 된 단어를 기본 자모 24종의 배열로 쪼갠다. 음절이 아닌 글자가 있으면 null */
+/** 한글 음절로만 된 단어를 자모 28종의 배열로 쪼갠다. 음절이 아닌 글자가 있으면 null */
 export function decompose(word: string): string[] | null {
   const jamo: string[] = [];
   for (const char of word) {

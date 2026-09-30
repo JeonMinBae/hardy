@@ -1,6 +1,7 @@
 import { Dialog } from "@/components/common/Dialog";
 
 const SOURCE_URL = "https://www.korean.go.kr/front/etcData/etcDataView.do?mn_id=208&etc_seq=71";
+const FREQUENCY_URL = "https://www.korean.go.kr/front/etcData/etcDataView.do?mn_id=208&etc_seq=61";
 const KOGL_URL = "https://www.kogl.or.kr/info/license.do";
 const LINK = "underline underline-offset-2";
 // 판의 타일과 같은 색·같은 테두리 규칙을 그대로 보여 준다
@@ -12,9 +13,9 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
   return (
     <Dialog title="워들 하는 법">
       <div className="flex flex-col gap-3 text-sm">
-        <p>한국 시간 자정마다 새 단어가 나옵니다. 단어를 자모 7개로 풀어 8번 안에 맞혀 보세요.</p>
-        <p>쌍자음, ㅐ·ㅘ 같은 모음 조합, 겹받침은 기본 자모로 풀어서 넣습니다.</p>
-        <p>강아지 = ㄱㅏㅇㅇㅏㅈㅣ · 개구리 = ㄱㅏㅣㄱㅜㄹㅣ · 까닭 = ㄱㄱㅏㄷㅏㄹㄱ</p>
+        <p>한국 시간 자정마다 새 단어가 나옵니다. 단어를 자모 7칸으로 풀어 8번 안에 맞혀 보세요. 사전에 있는 단어만 제출할 수 있습니다.</p>
+        <p>ㅐ·ㅒ·ㅔ·ㅖ는 한 칸입니다. 쌍자음, ㅘ 같은 모음 조합, 겹받침은 자모를 나눠 넣습니다.</p>
+        <p>강아지 = ㄱㅏㅇㅇㅏㅈㅣ · 비행기 = ㅂㅣㅎㅐㅇㄱㅣ · 까닭 = ㄱㄱㅏㄷㅏㄹㄱ</p>
         <ul className="flex flex-col gap-1">
           <li>
             <span className={`${CHIP} border-ink bg-ok`}>실선</span>자리까지 맞음
@@ -30,6 +31,10 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
           단어 출처: 국립국어원{" "}
           <a href={SOURCE_URL} target="_blank" rel="noreferrer" className={LINK}>
             「한국어 학습용 어휘 목록」
+          </a>
+          ·
+          <a href={FREQUENCY_URL} target="_blank" rel="noreferrer" className={LINK}>
+            「현대 국어 사용 빈도 조사」
           </a>{" "}
           (
           <a href={KOGL_URL} target="_blank" rel="noreferrer" className={LINK}>

@@ -7,9 +7,9 @@ const type = (state: WordleState, text: string) => [...text].reduce((s, jamo) =>
 describe("typeJamo / deleteJamo", () => {
   it("두 자모 키는 남은 칸이 둘보다 적으면 통째로 무시한다", () => {
     const six = type(newGame(), "ㅅㅏㅇㅓㅂㄱ");
-    expect(typeJamo(six, ["ㅏ", "ㅣ"])).toBe(six);
+    expect(typeJamo(six, ["ㄱ", "ㄱ"])).toBe(six);
     expect(typeJamo(six, ["ㅏ"]).current).toHaveLength(7);
-    expect(typeJamo(type(newGame(), "ㅅㅏㅇㅓㅂ"), ["ㅏ", "ㅣ"]).current).toEqual([..."ㅅㅏㅇㅓㅂㅏㅣ"]);
+    expect(typeJamo(type(newGame(), "ㅅㅏㅇㅓㅂ"), ["ㄱ", "ㄱ"]).current).toEqual([..."ㅅㅏㅇㅓㅂㄱㄱ"]);
   });
 
   it("삭제는 자모 하나씩 지우고, 빈 줄에서는 아무것도 하지 않는다", () => {
@@ -20,11 +20,14 @@ describe("typeJamo / deleteJamo", () => {
 });
 
 describe("submitGuess", () => {
-  it("7칸이 안 찼거나 조합되지 않으면 거절하고 시도로 세지 않는다", () => {
+  it("7칸이 안 찼거나 사전에 없는 단어면 거절하고 시도로 세지 않는다", () => {
     const six = type(newGame(), "ㅅㅏㅇㅓㅂㄱ");
     expect(submitGuess(six)).toEqual({ state: six, error: "incomplete" });
     const invalid = type(newGame(), "ㄱㅏㄴㅁㄹㅏㄱ");
     expect(submitGuess(invalid)).toEqual({ state: invalid, error: "invalid" });
+    // 글자로는 조합되지만(강아주) 사전에 없다
+    const unknown = type(newGame(), "ㄱㅏㅇㅇㅏㅈㅜ");
+    expect(submitGuess(unknown)).toEqual({ state: unknown, error: "invalid" });
   });
 
   it("받은 줄은 기록되고 입력 줄이 비워지며, 같은 단어도 다시 받는다", () => {

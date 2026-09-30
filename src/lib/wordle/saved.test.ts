@@ -22,7 +22,7 @@ describe("serialize / deserialize", () => {
     ["저장된 값 없음", null],
     ["JSON 아님", "{"],
     ["배열", "[]"],
-    ["알 수 없는 버전", raw.replace('"version":2', '"version":3')],
+    ["알 수 없는 버전", raw.replace('"version":3', '"version":4')],
     ["결과가 9회", raw.replace('"1":4', '"1":9')],
     ["결과 문자열이 lost 가 아님", raw.replace('"lost"', '"win"')],
     ["문제 번호 0", raw.replace('"1":4', '"0":4')],
@@ -41,8 +41,13 @@ describe("serialize / deserialize", () => {
   });
 
   it("자모 6개 시절 저장(버전 1)도 읽어 통계를 잇는다", () => {
-    const v1 = serialize({ ...DATA, today: { puzzle: 3, guesses: [[..."ㄱㅏㄴㅅㅏㄴ"]] } }).replace('"version":2', '"version":1');
+    const v1 = serialize({ ...DATA, today: { puzzle: 3, guesses: [[..."ㄱㅏㄴㅅㅏㄴ"]] } }).replace('"version":3', '"version":1');
     expect(deserialize(v1)).toEqual({ ...DATA, today: null });
+  });
+
+  it("ㅐ를 두 칸으로 넣던 저장(버전 2)은 7칸이어도 오늘 진행을 버리고 통계만 잇는다", () => {
+    const v2 = serialize({ ...DATA, today: { puzzle: 3, guesses: [[..."ㅊㅏㅣㄱㅅㅏㅇ"]] } }).replace('"version":3', '"version":2');
+    expect(deserialize(v2)).toEqual({ ...DATA, today: null });
   });
 });
 
