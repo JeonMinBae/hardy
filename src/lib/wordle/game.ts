@@ -1,9 +1,11 @@
-import { compose, decompose } from "./jamo";
+import { isAllowed } from "./answers";
+import { decompose } from "./jamo";
 
 export const WORD_LENGTH = 7;
 export const MAX_GUESSES = 8;
 
 export type Status = "playing" | "won" | "lost";
+/** invalid: 허용 목록에 없는 단어 */
 export type SubmitError = "incomplete" | "invalid";
 
 export interface WordleState {
@@ -41,6 +43,6 @@ export function deleteJamo(state: WordleState): WordleState {
 export function submitGuess(state: WordleState): { state: WordleState; error: SubmitError | null } {
   if (statusOf(state) !== "playing") return { state, error: null };
   if (state.current.length < WORD_LENGTH) return { state, error: "incomplete" };
-  if (compose(state.current) === null) return { state, error: "invalid" };
+  if (!isAllowed(state.current)) return { state, error: "invalid" };
   return { state: { ...state, guesses: [...state.guesses, state.current], current: [] }, error: null };
 }

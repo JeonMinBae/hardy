@@ -8,10 +8,10 @@ describe("jamoForKey", () => {
     ["KeyM", false, "ㅡ"],
     ["KeyR", true, "ㄱㄱ"],
     ["KeyT", true, "ㅅㅅ"],
-    ["KeyO", false, "ㅏㅣ"],
-    ["KeyP", false, "ㅓㅣ"],
-    ["KeyO", true, "ㅑㅣ"],
-    ["KeyP", true, "ㅕㅣ"],
+    ["KeyO", false, "ㅐ"],
+    ["KeyP", false, "ㅔ"],
+    ["KeyO", true, "ㅒ"],
+    ["KeyP", true, "ㅖ"],
     ["KeyK", true, "ㅏ"], // Shift 자리가 없는 키는 그대로
   ])("%s (Shift %s) → %s", (code, shift, jamo) => {
     expect(jamoForKey(code, shift)).toEqual([...jamo]);
@@ -22,7 +22,7 @@ describe("jamoForKey", () => {
     expect(jamoForKey("Enter", false)).toBeNull();
   });
 
-  it("26개 문자 키가 모두 기본 자모만 넣는다", () => {
+  it("26개 문자 키가 모두 자모 28종 안에서만 넣는다", () => {
     const basic = new Set<string>([...CONSONANTS, ...VOWELS]);
     for (const letter of "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
       for (const shift of [false, true]) expect(jamoForKey(`Key${letter}`, shift)!.every((j) => basic.has(j))).toBe(true);
@@ -30,10 +30,10 @@ describe("jamoForKey", () => {
   });
 });
 
-it("화면 키보드는 기본 자모 24종을 한 번씩 담고 입력·삭제 키가 있다", () => {
+it("화면 키보드는 자모 28종을 한 번씩 담고 입력·삭제 키가 있다", () => {
   const keys = KEYBOARD_ROWS.flat();
   const jamo = keys.filter((key) => key !== ENTER_KEY && key !== DELETE_KEY);
-  expect(jamo).toHaveLength(24);
+  expect(jamo).toHaveLength(28);
   expect(new Set(jamo)).toEqual(new Set([...CONSONANTS, ...VOWELS]));
   expect(keys).toContain(ENTER_KEY);
   expect(keys).toContain(DELETE_KEY);

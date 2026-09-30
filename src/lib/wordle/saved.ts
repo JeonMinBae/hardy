@@ -3,9 +3,9 @@ import { isJamo } from "./jamo";
 import type { Results } from "./stats";
 
 export const STORAGE_KEY = "hardy:wordle";
-const VERSION = 2;
-// 자모 6개·6번 시도 시절이 1이다. 그때 진행 중이던 줄은 길이가 안 맞아 버려지지만 통계는 그대로 읽는다
-const READABLE_VERSIONS: readonly number[] = [1, 2];
+const VERSION = 3;
+// 1: 자모 6개·6번 시도, 2: ㅐ를 ㅏㅣ 두 칸으로 넣던 시절. 둘 다 정답·칸 규칙이 달라 오늘 진행은 버리고 통계만 잇는다
+const READABLE_VERSIONS: readonly number[] = [1, 2, 3];
 
 export interface SavedData {
   /** 오늘 문제의 제출한 줄. 입력 중인 줄은 넣지 않는다 */
@@ -35,7 +35,7 @@ export function deserialize(raw: string | null): SavedData {
     const entries = Object.entries(data.results);
     if (!entries.every(([puzzle, result]) => isPuzzle(Number(puzzle)) && isResult(result))) return EMPTY_DATA;
     const { today } = data;
-    const todayUsable = isPuzzle(today?.puzzle) && Array.isArray(today.guesses) && today.guesses.length <= MAX_GUESSES && today.guesses.every(isGuess);
+    const todayUsable = data.version === VERSION && isPuzzle(today?.puzzle) && Array.isArray(today.guesses) && today.guesses.length <= MAX_GUESSES && today.guesses.every(isGuess);
     return {
       today: todayUsable ? { puzzle: today.puzzle, guesses: today.guesses.map((guess: string) => [...guess]) } : null,
       results: Object.fromEntries(entries.map(([puzzle, result]) => [Number(puzzle), result])) as Results,

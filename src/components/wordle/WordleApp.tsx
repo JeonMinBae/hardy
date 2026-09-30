@@ -20,7 +20,7 @@ import { StatsSummary } from "./StatsSummary";
 
 const SUBMIT_ERROR_MESSAGE: Record<SubmitError, string> = {
   incomplete: "자모 7개를 모두 입력해 주세요",
-  invalid: "글자가 되지 않는 조합이에요",
+  invalid: "사전에 없는 단어예요",
 };
 const NOTICE_MS = 2000;
 const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
