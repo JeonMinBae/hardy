@@ -4,6 +4,7 @@ const GAMES = [
   { href: "/sudoku", name: "스도쿠", description: "일반·X 스도쿠, 초급·중급·고급" },
   { href: "/wordle", name: "워들", description: "매일 한 문제, 자모 7개로 맞히는 한국어 단어" },
   { href: "/nonogram", name: "노노그램", description: "숫자 단서로 숨은 그림을 칠하는 퍼즐, 10×10·15×15·20×20" },
+  { href: "/cube", name: "큐브", description: "2×2·3×3 루빅스 큐브, 크기별 매일 한 문제와 연습" },
 ] as const;
 
 export default function HomePage() {
