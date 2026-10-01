@@ -1,3 +1,4 @@
+import { summarizeDaily } from "@/lib/common/streak";
 import type { Mark } from "./evaluate";
 import { MAX_GUESSES } from "./game";
 
@@ -16,31 +17,12 @@ export interface Stats {
   distribution: number[];
 }
 
-const isWin = (results: Results, puzzle: number) => typeof results[puzzle] === "number";
-
 export const recordResult = (results: Results, puzzle: number, result: Result): Results => ({ ...results, [puzzle]: result });
 
 export function computeStats(results: Results, today: number): Stats {
-  const puzzles = Object.keys(results).map(Number);
-  const wins = puzzles.filter((puzzle) => isWin(results, puzzle)).sort((a, b) => a - b);
   const distribution = Array<number>(MAX_GUESSES).fill(0);
-  for (const puzzle of wins) distribution[(results[puzzle] as number) - 1]++;
-
-  let maxStreak = 0;
-  let run = 0;
-  wins.forEach((puzzle, i) => {
-    run = i > 0 && wins[i - 1] === puzzle - 1 ? run + 1 : 1;
-    maxStreak = Math.max(maxStreak, run);
-  });
-
-  // 오늘 실패했으면 0이다. 오늘을 아직 안 풀었으면 어제까지 이어진 연속 기록은 살아 있다
-  let currentStreak = 0;
-  if (results[today] !== "lost") {
-    for (let puzzle = isWin(results, today) ? today : today - 1; isWin(results, puzzle); puzzle--) currentStreak++;
-  }
-
-  const winRate = puzzles.length === 0 ? 0 : Math.round((wins.length / puzzles.length) * 100);
-  return { played: puzzles.length, winRate, currentStreak, maxStreak, distribution };
+  for (const result of Object.values(results)) if (typeof result === "number") distribution[result - 1]++;
+  return { ...summarizeDaily(results, today, (result) => typeof result === "number"), distribution };
 }
 
 const EMOJI: Record<Mark, string> = { correct: "🟩", present: "🟨", absent: "⬜" };
