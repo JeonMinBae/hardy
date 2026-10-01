@@ -27,6 +27,11 @@ accents: # 게임마다 한 색. [data-game] 이 --accent / --accent-soft 를 �
   sudoku: { light: "#a84a28", dark: "#e8906a", soft-light: "#f3e0d6", soft-dark: "#2c2019" }
   wordle: { light: "#2a6f62", dark: "#6fc0ae", soft-light: "#dceae5", soft-dark: "#12241f" }
   nonogram: { light: "#7f5c0d", dark: "#d7a63f", soft-light: "#f3e7cf", soft-dark: "#2b2211" }
+  cube: { light: "#7a3f6e", dark: "#d79acb", soft-light: "#efe1ea", soft-dark: "#261a23" }
+
+cube: # 큐브 스티커·몸체. 표준 배치(윗면 흰·아랫면 노랑, 앞 초록·뒤 파랑, 오른쪽 빨강·왼쪽 주황)의 채도를 낮춘 값. 3D 씬이 CSS 변수로 읽는다
+  light: { u: "#f2efe8", r: "#b8483b", f: "#4f8a5b", d: "#e0bf55", l: "#d88a3c", b: "#3d6a99", body: "#2a251e" }
+  dark: { u: "#d8d3c8", r: "#a5463a", f: "#4a7d53", d: "#c9a94a", l: "#c27a35", b: "#3a6290", body: "#050505" }
 
 verdict: # 판정·상태 공용 색. 글자는 어느 쪽이든 {colors.ink} 이고 배경만 바뀐다
   # ok = 맞음·완성(워들 정답, 스도쿠 완성 유닛), near = 부분 일치·부가 규칙 영역(워들 위치 틀림, X 대각선), off = 제외
@@ -200,7 +205,7 @@ components:
 - 숫자패드·키보드처럼 눌러 쓰는 면만 `sunken` 으로 낮춘다. 라이트에서 유일하게 따뜻한 면이라 여기에 색을 더 얹지 않는다.
 - 본문은 `ink`, 보조 설명은 `ink-muted`. 그 외 회색은 만들지 않는다.
 - 선은 두 종류다. `line` 은 카드 테두리 같은 장식선이고, 격자처럼 칸을 식별해야 하는 선은 `line-strong` 을 쓴다(WCAG 1.4.11 의 3:1 을 넘기려면 이 값이어야 한다). 스도쿠 3×3 경계처럼 더 강한 구조선은 `ink-muted` 로 한 단 올린다.
-- 액센트는 화면당 한 색이다. 게임 루트에 `data-game="sudoku" | "wordle" | "nonogram"` 을 달면 `--accent` 와 `--accent-soft` 가 그 게임 색으로 바뀌므로, 컴포넌트는 항상 `accent` 토큰만 참조한다. 특정 게임 색을 코드에 직접 적지 않는다.
+- 액센트는 화면당 한 색이다. 게임 루트에 `data-game="sudoku" | "wordle" | "nonogram" | "cube"` 을 달면 `--accent` 와 `--accent-soft` 가 그 게임 색으로 바뀌므로, 컴포넌트는 항상 `accent` 토큰만 참조한다. 특정 게임 색을 코드에 직접 적지 않는다.
 - 대비는 WCAG AA 기준으로 맞춰 둔 값이다. 라이트에서 액센트 글자는 `canvas` 위 5.7:1, `sunken` 위 5.2:1 이고 다크는 모두 7:1 을 넘는다.
 
 ## 3. 타이포그래피
@@ -211,7 +216,7 @@ components:
 
 ## 4. 레이아웃
 
-- 화면은 한 칸 컬럼이다. 폭은 판이 필요한 만큼만 준다: 스도쿠 `max-w-md`, 워들 `max-w-lg`(자모 7칸), 노노그램 `max-w-2xl`(퍼즐 목록).
+- 화면은 한 칸 컬럼이다. 폭은 판이 필요한 만큼만 준다: 스도쿠 `max-w-md`, 워들 `max-w-lg`(자모 7칸), 노노그램 `max-w-2xl`(퍼즐 목록), 큐브 `max-w-md`.
 - 세로 리듬은 `spacing.lg`(요소 사이) → `spacing.section`(구역 사이) 두 단계로만 나눈다.
 - 보드는 화면에서 가장 큰 덩어리다. 보드 위아래 여백을 컨트롤보다 넉넉히 줘서 시선이 보드에 먼저 닿게 한다.
 
@@ -273,6 +278,7 @@ components:
 - 바탕에 크림 틴트를 넣지 않는다. 흰 바탕은 의도한 선택이고, 따뜻함은 `sunken` 과 액센트가 낸다.
 - 격자선에 `line` 을 쓰지 않는다. 너무 옅어서 칸이 안 보인다.
 - 게임별 색을 컴포넌트에 하드코딩하지 않는다.
+- 파란 계열 UI 금지의 예외: 큐브 표준 스티커 색(`cube.b` 파랑 등)은 UI 가 아니라 게임 내용이다. 버튼·배경·강조에는 여전히 파랑을 쓰지 않는다.
 - hover 로만 알 수 있는 정보를 만들지 않는다. 터치에서는 hover 가 없다.
 - 그림자를 층층이 쌓지 않는다. 뜨는 것은 카드와 모달뿐이다.
 

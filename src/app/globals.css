@@ -45,6 +45,19 @@
   --accent-soft: #f3e7cf;
 }
 
+[data-game="cube"] {
+  --accent: #7a3f6e;
+  --accent-soft: #efe1ea;
+  /* 표준 배치: 윗면 흰·아랫면 노랑, 앞 초록·뒤 파랑, 오른쪽 빨강·왼쪽 주황. 채도를 낮춰 지면 톤에 맞춘다 */
+  --cube-u: #f2efe8;
+  --cube-r: #b8483b;
+  --cube-f: #4f8a5b;
+  --cube-d: #e0bf55;
+  --cube-l: #d88a3c;
+  --cube-b: #3d6a99;
+  --cube-body: #2a251e;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
@@ -84,6 +97,18 @@
   [data-game="nonogram"] {
     --accent: #d7a63f;
     --accent-soft: #2b2211;
+  }
+
+  [data-game="cube"] {
+    --accent: #d79acb;
+    --accent-soft: #261a23;
+    --cube-u: #d8d3c8;
+    --cube-r: #a5463a;
+    --cube-f: #4a7d53;
+    --cube-d: #c9a94a;
+    --cube-l: #c27a35;
+    --cube-b: #3a6290;
+    --cube-body: #050505;
   }
 }
 
